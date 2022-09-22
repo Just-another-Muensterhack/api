@@ -106,3 +106,13 @@ jobs:
         if: ${{ github.event_name != 'pull_request' }}
         run: |
           docker buildx imagetools inspect ghcr.io/${{ env.IMAGE_NAME }}:${{ steps.docker_meta.outputs.version }}
+
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+
+
+      - name: Trigger CD
+        run: |
+          curl https://hook.hack.felixevers.de/cgi-bin/deploy.cgi?${{ steps.extract_branch.outputs.branch }}

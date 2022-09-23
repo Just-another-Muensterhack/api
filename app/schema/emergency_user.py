@@ -3,9 +3,9 @@ import enum
 from sqlalchemy import Column, Enum
 from sqlalchemy.orm import relationship
 
-from .emergencies import Emergencies
-from .users import Users
-from ..db import Base
+from emergency import Emergencie
+from user import User
+from db import Base
 
 
 class Type(enum.Enum):
@@ -13,9 +13,9 @@ class Type(enum.Enum):
     aide = 1
 
 
-class EmergencyUsers(Base):
+class EmergencyUser(Base):
     __tablename__ = "emergency_users"
 
-    user_id = relationship(Users.id)
-    emergency_id = relationship(Emergencies.id)
+    user_id = relationship(User.id)
+    emergency_id = relationship(Emergencie.id)
     type = Column(Enum(Type), nullable=False)

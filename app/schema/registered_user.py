@@ -3,7 +3,7 @@ from sqlalchemy.dialects.postgresql import UUID
 import uuid
 import enum
 
-from ..db import Base
+from db import Base
 
 
 class Role(enum.Enum):

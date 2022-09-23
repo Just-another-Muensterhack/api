@@ -5,7 +5,7 @@ import uuid
 from sqlalchemy import Column, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 
-from ..db import Base
+from db import Base
 
 
 class Role(enum.Enum):

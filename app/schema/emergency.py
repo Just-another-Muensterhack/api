@@ -4,7 +4,7 @@ import uuid
 from sqlalchemy import Column, Enum, DateTime, Float
 from sqlalchemy.dialects.postgresql import UUID
 
-from ..db import Base
+from db import Base
 
 
 class Status:

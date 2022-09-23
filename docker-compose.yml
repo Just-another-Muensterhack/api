@@ -11,6 +11,7 @@ services:
       - '/srv/postgres/postgres-data:/var/lib/postgres/data'
 
   api:
+    build: ./app
     image: ghcr.io/just-another-muensterhack/api:main
     restart: always
     env_file: .api.env

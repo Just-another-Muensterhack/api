@@ -1,6 +1,6 @@
-import datetime
-import random
-from typing import Union
+from starlette.middleware.cors import CORSMiddleware
+
+import routes
 
 from fastapi import FastAPI
 
@@ -16,12 +16,21 @@ app = FastAPI(
         "name": "helpwave",
         "url": "https://helpwave.de",
         "email": "mail@helpwave.de",
-    },)
+    },
+)
 
-# create database schema
-Model.metadata.create_all(engine)
+origins = ["https://helpwave.de", "http://helpwave.de", "https://main.helpwave.de", "http://main.helpwave.de", "*"]
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
+app.include_router(routes.user.user_router)
+app.include_router(routes.emergency.emergency_router)
 
 @app.get("/")
 def read_root():

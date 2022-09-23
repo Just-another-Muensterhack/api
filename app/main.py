@@ -20,6 +20,7 @@ origins = [
     "http://helpwave.de",
     "https://main.helpwave.de",
     "http://main.helpwave.de",
+    "*"
 ]
 
 app.add_middleware(

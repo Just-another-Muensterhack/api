@@ -115,4 +115,4 @@ jobs:
 
       - name: Trigger CD
         run: |
-          curl https://hook.hack.felixevers.de/cgi-bin/deploy.cgi?${{ steps.extract_branch.outputs.branch }}
+          curl https://hook.helpwave.de/cgi-bin/deploy.cgi?${{ steps.extract_branch.outputs.branch }}

@@ -2,7 +2,7 @@ from typing import Union
 
 from fastapi import FastAPI
 
-from database import user, Model, engine
+from database import Model, engine
 from schema.user import User
 
 app = FastAPI()

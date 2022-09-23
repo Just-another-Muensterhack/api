@@ -1,9 +1,11 @@
-from sqlalchemy import Column, String, Enum, Optional
+from sqlalchemy import Column, String, Enum, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
 import enum
 
-from db import Base
+from datetime import datetime
+from database import Model
+from database import session
 
 
 class Role(enum.Enum):
@@ -12,13 +14,56 @@ class Role(enum.Enum):
     user = 2
 
 
-class RegisteredUser(Base):
+class RegisteredUser(Model):
     __tablename__ = "registered_users"
 
-    id: UUID = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
-    phone_number: str = Column(String, unique=True, index=True)
-    email: str = Column(String, unique=True, index=True)
-    role: Role = Column(Enum(Role), default=Role.user)
-    first_name: str = Column(String, index=True)
-    last_name: str = Column(String, index=True)
-    hashed_password: Optional[str] = Column(String, nullable=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
+    phone_number = Column(String, unique=True, index=True)
+    email = Column(String, unique=True, index=True)
+    role = Column(Enum(Role), default=Role.user)
+    first_name = Column(String, index=True)
+    last_name = Column(String, index=True)
+    hashed_password = Column(String, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    @staticmethod
+    def get(user_id: uuid.UUID):
+        return session.query(RegisteredUser).get(user_id)
+
+    @staticmethod
+    def create(user):
+        session.add(
+            RegisteredUser(
+                id=uuid.uuid4(),
+                phone_number=user.phone_number,
+                email=user.email,
+                role=Role.user,
+                first_name=user.first_name,
+                last_name=user.last_name,
+                hashed_password=user.hashed_password,
+                created_at=datetime.utcnow(),
+            )
+        )
+        session.commit()
+
+    @staticmethod
+    def update(user):
+        stmt = existing_user = (
+            RegisteredUser.update()
+            .values(
+                phone_number=user.phone_number,
+                email=user.email,
+                role=user.role,
+                first_name=user.first_name,
+                last_name=user.last_name,
+                hashed_password=user.hashed_password,
+            )
+            .where(RegisteredUser.id == user.id)
+        )
+
+        session.excute(stmt)
+
+    @staticmethod
+    def delete(user_id: uuid.UUID):
+        session.query(RegisteredUser).filter(RegisteredUser.id == user_id).delete()
+        session.commit()

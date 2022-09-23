@@ -1,11 +1,13 @@
-from datetime import datetime
 import uuid
-
 import enum
+from datetime import datetime
+
+from database import session
+
 from sqlalchemy import Column, Enum, DateTime, Float
 from sqlalchemy.dialects.postgresql import UUID
 
-from db import Base
+from database import Model
 
 
 class Status(enum.Enum):
@@ -14,12 +16,46 @@ class Status(enum.Enum):
     completed = 2
 
 
-class Emergency(Base):
-    __tablename__ = "emergency"
+class Emergency(Model):
+    __tablename__ = "emergencies"
 
-    id: UUID = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
-    status: Status = Column(Enum(Status), default=Status.in_progress)
-    start: datetime = Column(DateTime, default=datetime.utcnow)
-    end: datetime = Column(DateTime, nullable=True)
-    latitude: float = Column(Float, nullable=False)
-    longitude: float = Column(Float, nullable=False)
+    id = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
+    status = Column(Enum(Status), default=Status.in_progress)
+    latitude = Column(Float, nullable=False)
+    longitude = Column(Float, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    closed_at = Column(DateTime, nullable=True)
+
+    @staticmethod
+    def get(emergency_id: uuid.UUID):
+        return session.query(Emergency).get(emergency_id)
+
+    @staticmethod
+    def create(emergency):
+        session.add(
+            Emergency(
+                id=uuid.uuid4(),
+                status=emergency.status,
+                latitude=emergency.latitude,
+                longitude=emergency.longitude,
+                created_at=datetime.utcnow(),
+            )
+        )
+        session.commit()
+
+    @staticmethod
+    def update(emergency):
+        session.query(Emergency).filter(Emergency.id == emergency.id).update(
+            Emergency(
+                status=emergency.status,
+                latitude=emergency.latitude,
+                longitude=emergency.longitude,
+                closed_at=emergency.closed_at,
+            )
+        )
+        session.commit()
+
+    @staticmethod
+    def delete(emergency_id: uuid.UUID):
+        session.query(Emergency).filter(Emergency.id == emergency_id).delete()
+        session.commit()

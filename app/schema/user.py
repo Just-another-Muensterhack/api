@@ -5,7 +5,7 @@ import uuid
 from sqlalchemy import Column, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 
-from database import Model, engine
+from database import Model
 from database import session
 
 

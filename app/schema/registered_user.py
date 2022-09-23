@@ -3,7 +3,7 @@ from sqlalchemy.dialects.postgresql import UUID
 import uuid
 import enum
 
-from db import Base
+from database import Model
 
 
 class Role(enum.Enum):
@@ -12,7 +12,7 @@ class Role(enum.Enum):
     user = 2
 
 
-class RegisteredUser(Base):
+class RegisteredUser(Model):
     __tablename__ = "registered_users"
 
     id = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)

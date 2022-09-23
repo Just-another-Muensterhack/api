@@ -4,7 +4,7 @@ import uuid
 from sqlalchemy import Column, Enum, DateTime, Float
 from sqlalchemy.dialects.postgresql import UUID
 
-from db import Base
+from database import Model
 
 
 class Status:
@@ -13,7 +13,7 @@ class Status:
     completed = 2
 
 
-class Emergencie(Base):
+class Emergencie(Model):
     __tablename__ = "emergencies"
 
     id = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)

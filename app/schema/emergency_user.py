@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 
 from emergency import Emergencie
 from user import User
-from db import Base
+from database import Model
 
 
 class Type(enum.Enum):
@@ -13,7 +13,7 @@ class Type(enum.Enum):
     aide = 1
 
 
-class EmergencyUser(Base):
+class EmergencyUser(Model):
     __tablename__ = "emergency_users"
 
     user_id = relationship(User.id)

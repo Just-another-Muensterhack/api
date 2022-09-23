@@ -23,3 +23,4 @@ class Emergency(Base):
     end: datetime = Column(DateTime, nullable=True)
     latitude: float = Column(Float, nullable=False)
     longitude: float = Column(Float, nullable=False)
+

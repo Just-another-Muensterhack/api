@@ -22,3 +22,4 @@ class RegisteredUser(Base):
     first_name: str = Column(String, index=True)
     last_name: str = Column(String, index=True)
     hashed_password: Optional[str] = Column(String, nullable=True)
+

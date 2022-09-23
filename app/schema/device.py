@@ -4,8 +4,8 @@ from sqlalchemy import Column, Float
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
-from .user import User
-from ..db import Base
+from user import User
+from db import Base
 
 
 class Device(Base):

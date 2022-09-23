@@ -3,9 +3,9 @@ import enum
 from sqlalchemy import Column, Enum
 from sqlalchemy.orm import relationship
 
-from .emergencie import Emergencie
-from .user import User
-from ..db import Base
+from emergency import Emergencie
+from user import User
+from db import Base
 
 
 class Type(enum.Enum):

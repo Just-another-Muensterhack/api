@@ -19,4 +19,3 @@ class EmergencyUser(Base):
     user_id: UUID = relationship(User.id)
     emergency_id: UUID = relationship(Emergencie.id)
     type: Type = Column(Enum(Type), nullable=False)
-

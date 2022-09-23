@@ -19,4 +19,3 @@ class User(Base):
 
     id: UUID = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
     created_at: datetime = Column(DateTime, default=datetime.utcnow)
-

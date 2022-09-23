@@ -15,4 +15,3 @@ class Device(Base):
     user_id: UUID = relationship(User.id)
     latitude: float = Column(Float, nullable=False)
     longitude: float = Column(Float, nullable=False)
-

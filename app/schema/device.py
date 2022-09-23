@@ -12,10 +12,10 @@ from database import session
 class Device(Model):
     __tablename__ = "devices"
 
-    id: UUID = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
-    user_id: UUID = relationship(User.id)
-    latitude: float = Column(Float, nullable=False)
-    longitude: float = Column(Float, nullable=False)
+    id = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
+    user_id = relationship(User.id)
+    latitude = Column(Float, nullable=False)
+    longitude = Column(Float, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     @staticmethod

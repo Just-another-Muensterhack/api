@@ -8,6 +8,7 @@ let
     python-jose
     uvicorn
     passlib
+    psycopg2
   ]);
 in
 pkgs.mkShell {

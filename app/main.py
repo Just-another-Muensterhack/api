@@ -2,6 +2,10 @@ from typing import Union
 
 from fastapi import FastAPI
 
+
+from app import db
+from app.db import Base
+
 app = FastAPI()
 
 
@@ -13,3 +17,11 @@ def read_root():
 @app.get("/items/{item_id}")
 def read_item(item_id: int, q: Union[str, None] = None):
     return {"item_id": item_id, "q": q}
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    Base.metadata.create_all(bind=db.engine)
+
+    uvicorn.run(app, host="localhost", port=8000)

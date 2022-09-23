@@ -33,7 +33,7 @@ echo "postgres started"
 
 # shellcheck disable=SC2198
 if [ -z "${@}" ]; then
-  uvicorn main:app --host 0.0.0.0 --port 8000 --log-level DEBUG
+  uvicorn main:app --host 0.0.0.0 --port 8000 --log-level debug
 else
   exec "${@}"
 fi

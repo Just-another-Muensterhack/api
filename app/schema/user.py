@@ -27,10 +27,7 @@ class User(Model):
 
     @staticmethod
     def create():
-        session.add(User(
-            id=uuid.uuid4(),
-            created_at=datetime.datetime.utcnow()
-        ))
+        session.add(User(id=uuid.uuid4(), created_at=datetime.datetime.utcnow()))
         session.commit()
 
     @staticmethod

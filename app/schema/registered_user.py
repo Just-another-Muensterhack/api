@@ -4,6 +4,7 @@ import uuid
 import enum
 
 from database import Model
+from database import session
 
 
 class Role(enum.Enum):
@@ -22,3 +23,19 @@ class RegisteredUser(Model):
     first_name = Column(String, index=True)
     last_name = Column(String, index=True)
     hashed_password = Column(String, nullable=True)
+
+    @staticmethod
+    def get(user_id: uuid.UUID):
+        return session.query(User).get(user_id)
+
+    @staticmethod
+    def create():
+        session.add(
+            RegisteredUser(id=uuid.uuid4(), created_at=datetime.datetime.utcnow())
+        )
+        session.commit()
+
+    @staticmethod
+    def delete(user_id: uuid.UUID):
+        session.query(User).filter(User.id == user_id).delete()
+        session.commit()

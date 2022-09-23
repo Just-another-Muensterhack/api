@@ -36,7 +36,11 @@ app.add_middleware(
 app.include_router(routes.user.user_router)
 app.include_router(routes.emergency.emergency_router)
 
-Model.metadata.create_all(bind=engine)
+
+@app.on_event("startup")
+async def startup_event():
+    Model.metadata.create_all(bind=engine)
+
 
 if __name__ == "__main__":
     import uvicorn

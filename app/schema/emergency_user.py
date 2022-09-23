@@ -16,6 +16,6 @@ class Type(enum.Enum):
 class EmergencyUser(Model):
     __tablename__ = "emergency_users"
 
-    user_id = relationship(User.id)
-    emergency_id = relationship(Emergencie.id)
-    type = Column(Enum(Type), nullable=False)
+    user_id: UUID = relationship(User.id)
+    emergency_id: UUID = relationship(Emergencie.id)
+    type: Type = Column(Enum(Type), nullable=False)

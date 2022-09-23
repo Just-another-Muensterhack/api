@@ -1,20 +1,21 @@
 import datetime
 import uuid
 
+import enum
 from sqlalchemy import Column, Enum, DateTime, Float
 from sqlalchemy.dialects.postgresql import UUID
 
 from db import Base
 
 
-class Status:
+class Status(enum.Enum):
     in_progress = 0
     cancelled = 1
     completed = 2
 
 
-class Emergencie(Base):
-    __tablename__ = "emergencies"
+class Emergency(Base):
+    __tablename__ = "emergency"
 
     id = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
     status = Column(Enum(Status), default=Status.in_progress)

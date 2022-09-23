@@ -69,7 +69,7 @@ class DevicesList(BaseModel):
 
 
 # does not require auth
-@user_router.get("/create", response_model=UuidResponse)
+@user_router.post("/create", response_model=UuidResponse)
 async def user_create():
     """
     creates basic user and returnes basic id from the user

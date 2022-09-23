@@ -1,3 +1,5 @@
+shell.nix
+*.pyc
 # Created by https://www.toptal.com/developers/gitignore/api/pycharm,python,windows,macos,linux,intellij
 # Edit at https://www.toptal.com/developers/gitignore?templates=pycharm,python,windows,macos,linux,intellij
 

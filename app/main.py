@@ -15,13 +15,7 @@ app = FastAPI(
     },
 )
 
-origins = [
-    "https://helpwave.de",
-    "http://helpwave.de",
-    "https://main.helpwave.de",
-    "http://main.helpwave.de",
-    "*"
-]
+origins = ["https://helpwave.de", "http://helpwave.de", "https://main.helpwave.de", "http://main.helpwave.de", "*"]
 
 app.add_middleware(
     CORSMiddleware,

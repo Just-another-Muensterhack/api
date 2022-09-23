@@ -1,9 +1,9 @@
 from .jwt import Token, get_current_user
 from .structs import SuccessResponse, UuidResponse, UuidRequest
 
-from schema.user import User
+from schema.user import User, Role
 
-from typing import Union, List, Optional
+from typing import Optional
 from uuid import UUID
 
 from fastapi import Depends, APIRouter, HTTPException, status
@@ -11,7 +11,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 from pydantic import BaseModel
 
-user_router = APIRouter(prefix="/users")
+user_router = APIRouter(prefix="/user")
 
 # Request Types
 class UserDelete(BaseModel):
@@ -33,12 +33,11 @@ class UserLogin(BaseModel):
 
 class PromoteUser(BaseModel):
     user_id: UUID
-    role: int  # TODO: change to enum
+    role: Role
 
 
 class AddDevice(BaseModel):
     user_id: UUID
-    token: str  # TODO: discuss
 
 
 class RemoveDevice(BaseModel):
@@ -60,7 +59,7 @@ class SessionResponse(BaseModel):
 
 
 class DevicesList(BaseModel):
-    devices: List[UUID]
+    devices: list[UUID]
 
 
 class UserInfo(BaseModel):

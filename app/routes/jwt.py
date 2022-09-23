@@ -1,21 +1,40 @@
-from typing import Union
+from typing import Optional
 from uuid import UUID
+import os
+import binascii
+import logging
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from passlib.context import CryptContext
 from pydantic import BaseModel
 
-# SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_DAYS = 30
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+def generare_secret_key() -> str:
+    binascii.b2a_hex(os.urandom(32))
+
+
+def get_secret_key() -> str:
+    # this sets a default value for the SECRET_KEY_FILE
+    env_file_path: Optional[str] = os.getenv("SECRET_KEY_FILE")
+    if not env_file_path:
+        logging.warn("generating temporary secret key")
+        return generare_secret_key()
+
+    with open(env_file_path) as f:
+        return f.read()
+
+
+SECRET_KEY: str = get_secret_key()
+ALGORITHM: str = "HS256"
+ACCESS_TOKEN_EXPIRE_DAYS: int = 30
+pwd_context: CryptContext = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+oauth2_scheme: OAuth2PasswordBearer = OAuth2PasswordBearer(tokenUrl="token")
 
 
 class TokenData(BaseModel):
-    user_id: Union[UUID, None] = None
+    user_id: Optional[UUID]
 
 
 class Token(BaseModel):
@@ -50,6 +69,6 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     # get actuall user struct from database
     # user = get_user(fake_users_db, user_id=token_data.user_id)
 
-    if user is None:
+    if not user:
         raise credentials_exception
     return user

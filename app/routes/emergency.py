@@ -4,7 +4,6 @@ from .structs import SuccessResponse, UuidResponse
 from schema.user import User
 from schema.emergency import Status
 
-from typing import Union, List
 from uuid import UUID
 from datetime import datetime
 
@@ -35,7 +34,7 @@ class Question(BaseModel):
 
 
 class BulkLog(BaseModel):
-    questions: List[Question]
+    questions: list[Question]
 
 
 class EmergencyInfo(BaseModel):
@@ -46,7 +45,7 @@ class EmergencyInfo(BaseModel):
 
 
 class EmergencyList(BaseModel):
-    emergencies: List[EmergencyInfo]
+    emergencies: list[EmergencyInfo]
 
 
 # does not require auth

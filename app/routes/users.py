@@ -1,4 +1,5 @@
 from .jwt import Token, get_current_user
+from .structs import SuccessResponse, UuidResponse
 
 from typing import Union, List
 from uuid import UUID
@@ -51,13 +52,6 @@ class UpdatePosition(BaseModel):
     lon: float
 
 # Response Types
-class UuidResponse(BaseModel):
-    id: UUID
-
-
-class SuccessResponse(BaseModel):
-    success: bool
-
 
 class SessionResponse(BaseModel):
     success: bool

@@ -1,10 +1,8 @@
 import datetime
-import enum
 import uuid
 
 from sqlalchemy import Column, Enum, DateTime, Float
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship
 
 from ..db import Base
 
@@ -15,7 +13,7 @@ class Status:
     completed = 2
 
 
-class Emergencies(Base):
+class Emergencie(Base):
     __tablename__ = "emergencies"
 
     id = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)

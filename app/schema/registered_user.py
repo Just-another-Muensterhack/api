@@ -12,7 +12,7 @@ class Role(enum.Enum):
     user = 2
 
 
-class RegisteredUsers(Base):
+class RegisteredUser(Base):
     __tablename__ = "registered_users"
 
     id = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)

@@ -17,16 +17,6 @@ app = FastAPI(
 
 app.include_router(routes.users.user_router)
 
-from app import db
-from app.db import Base
-
-app = FastAPI()
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
-
-
 if __name__ == "__main__":
     import uvicorn
 

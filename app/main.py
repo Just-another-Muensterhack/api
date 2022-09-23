@@ -1,11 +1,15 @@
 from starlette.middleware.cors import CORSMiddleware
 
 import routes
+import uuid
+from datetime import datetime
 
 from fastapi import FastAPI
 
 from database import Model, engine
 from schema.user import User
+from schema.registered_user import RegisteredUser
+
 
 app = FastAPI(
     title="helpwave-backend",
@@ -32,9 +36,9 @@ app.add_middleware(
 app.include_router(routes.user.user_router)
 app.include_router(routes.emergency.emergency_router)
 
+Model.metadata.create_all(bind=engine)
+
 if __name__ == "__main__":
     import uvicorn
-
-    Base.metadata.create_all(bind=db.engine)
 
     uvicorn.run(app, host="localhost", port=8000)

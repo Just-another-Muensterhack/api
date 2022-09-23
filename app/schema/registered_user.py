@@ -24,7 +24,7 @@ class RegisteredUser(Model):
     first_name = Column(String, index=True)
     last_name = Column(String, index=True)
     hashed_password = Column(String, nullable=True)
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.utcnow)
 
     @staticmethod
     def get(user_id: uuid.UUID):
@@ -48,18 +48,20 @@ class RegisteredUser(Model):
 
     @staticmethod
     def update(user):
-        existing_user = session.query(RegisteredUser).filter(RegisteredUser.id == user.id)
-        existing_user.update(
-            {
-                RegisteredUser.phone_number: user.phone_number,
-                RegisteredUser.email: user.email,
-                RegisteredUser.role: user.role,
-                RegisteredUser.first_name: user.first_name,
-                RegisteredUser.last_name: user.last_name,
-                RegisteredUser.hashed_password: user.hashed_password,
-            }
+        stmt = existing_user = (
+            RegisteredUser.update()
+            .values(
+                phone_number=user.phone_number,
+                email=user.email,
+                role=user.role,
+                first_name=user.first_name,
+                last_name=user.last_name,
+                hashed_password=user.hashed_password,
+            )
+            .where(RegisteredUser.id == user.id)
         )
-        session.commit()
+
+        session.excute(stmt)
 
     @staticmethod
     def delete(user_id: uuid.UUID):

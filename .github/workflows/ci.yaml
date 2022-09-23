@@ -7,7 +7,7 @@ on:
   pull_request:
 
 env:
-  IMAGE_NAME: just-another-muensterhack/kita-api
+  IMAGE_NAME: just-another-muensterhack/api
   DOCKER_PLATFORMS: linux/amd64,linux/arm64 #,linux/arm/v7,linux/arm/v6,linux/386,linux/ppc64le,linux/s390x
   PYTHON_VERSION: "3.10"
 

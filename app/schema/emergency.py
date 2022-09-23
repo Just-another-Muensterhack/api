@@ -1,4 +1,6 @@
 import uuid
+import enum
+from datetime import datetime
 
 from database import session
 
@@ -8,7 +10,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from database import Model
 
 
-class Status:
+class Status(enum.Enum):
     in_progress = 0
     cancelled = 1
     completed = 2
@@ -36,7 +38,7 @@ class Emergency(Model):
                 status=emergency.status,
                 latitude=emergency.latitude,
                 longitude=emergency.longitude,
-                created_at=datetime.datetime.utcnow(),
+                created_at=datetime.utcnow(),
             )
         )
         session.commit()

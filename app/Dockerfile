@@ -6,7 +6,7 @@ FROM python:${PY_VERSION}-alpine as builder
 WORKDIR /build
 
 RUN apk update \
- && apk add gcc python3-dev musl-dev jpeg-dev zlib-dev postgresql-dev
+ && apk add gcc g++ python3-dev musl-dev jpeg-dev zlib-dev postgresql-dev
 
 # install dependencies
 COPY requirements.txt requirements.txt

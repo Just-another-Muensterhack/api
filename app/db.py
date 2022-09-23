@@ -4,14 +4,11 @@ import os
 
 from sqlalchemy.ext.declarative import declarative_base
 
-User = os.getenv('POSTGRES_USER')
-Password = os.environ.get('POSTGRES_PASSWORD')
-Database = os.environ.get('POSTGRES_DB')
+user = os.getenv('POSTGRES_USER')
+password = os.environ.get('POSTGRES_PASSWORD')
+database = os.environ.get('POSTGRES_DB')
 
-print(User, Password, Database)
 
-engine = create_engine(f'postgresql://{User}:{Password}@localhost:5432/{Database}', echo=True)
+engine = create_engine(f'postgresql://{user}:{password}@localhost:5432/{database}', echo=True)
 
 Base = declarative_base()
-
-

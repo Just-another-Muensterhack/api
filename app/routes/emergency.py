@@ -29,13 +29,24 @@ class UpdateSeverity(BaseModel):
 
 
 class Question(BaseModel):
-    question: int
-    answer: int
+    question: str
+    answer: str
     time: datetime
 
 
 class BulkLog(BaseModel):
     questions: List[Question]
+
+
+class EmergencyInfo(BaseModel):
+    id: UUID
+    lat: float
+    lon: float
+    severity: int
+
+
+class EmergencyList(BaseModel):
+    emergencies: List[EmergencyInfo]
 
 
 # does not require auth
@@ -71,6 +82,14 @@ async def emergency_update(current_user: User = Depends(get_current_user)):
     return {"success": True}
 
 
+@emergency_router.put("/info", response_model=EmergencyInfo)
+async def emergency_update(current_user: User = Depends(get_current_user)):
+    """
+    setting severity
+    """
+    return {"id": "uuid", "lat": 0, "lon": 0, "severity": 5}
+
+
 @emergency_router.put("/log/single", response_model=SuccessResponse)
 async def emergency_log_single(log: Question, current_user: User = Depends(get_current_user)):
     """
@@ -95,4 +114,25 @@ async def emergency_log_single(current_user: User = Depends(get_current_user)):
     return {"questions": []}
 
 
-# TODO: use-to maybe add specific endpoint for graph logic
+@emergency_router.post("/accept", response_model=SuccessResponse)
+async def emergency_log_single(current_user: User = Depends(get_current_user)):
+    """
+    accept helping
+    """
+    return {"success": True}
+
+
+@emergency_router.post("/deny", response_model=SuccessResponse)
+async def emergency_log_single(current_user: User = Depends(get_current_user)):
+    """
+    deny helping
+    """
+    return {"questions": True}
+
+
+@emergency_router.post("/poll", response_model=EmergencyList)
+async def emergency_log_single(current_user: User = Depends(get_current_user)):
+    """
+    actively poll for emergencies
+    """
+    return {"emergencies": []}

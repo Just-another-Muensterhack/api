@@ -1,9 +1,9 @@
 from .jwt import Token, get_current_user
-from .structs import SuccessResponse, UuidResponse
+from .structs import SuccessResponse, UuidResponse, UuidRequest
 
 from schema.user import User
 
-from typing import Union, List
+from typing import Union, List, Optional
 from uuid import UUID
 
 from fastapi import Depends, APIRouter, HTTPException, status
@@ -12,11 +12,6 @@ from jose import JWTError, jwt
 from pydantic import BaseModel
 
 user_router = APIRouter(prefix="/users")
-
-
-class User:
-    id: UUID
-
 
 # Request Types
 class UserDelete(BaseModel):
@@ -68,6 +63,14 @@ class DevicesList(BaseModel):
     devices: List[UUID]
 
 
+class UserInfo(BaseModel):
+    id: UUID
+    email: Optional[str]
+    first_name: Optional[str]
+    second_name: Optional[str]
+    role: Optional[int]
+
+
 # does not require auth
 @user_router.post("/create", response_model=UuidResponse)
 async def user_create():
@@ -109,6 +112,15 @@ async def user_promote(request: PromoteUser, current_user: User = Depends(get_cu
     """
 
     return {"success": True}
+
+
+@user_router.post("/info", response_model=UserInfo)
+async def user_promote(request: UuidRequest, current_user: User = Depends(get_current_user)):
+    """
+    changes role of user to specified
+    """
+
+    return {"id": request["id"]}
 
 
 @user_router.put("/device", response_model=UuidResponse)

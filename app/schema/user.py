@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 import enum
 import uuid
 
@@ -17,5 +17,5 @@ class Role(enum.Enum):
 class User(Base):
     __tablename__ = "users"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    id: UUID = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
+    created_at: datetime = Column(DateTime, default=datetime.utcnow)

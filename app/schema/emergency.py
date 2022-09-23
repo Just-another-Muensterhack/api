@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 import uuid
 
 import enum
@@ -17,9 +17,9 @@ class Status(enum.Enum):
 class Emergency(Base):
     __tablename__ = "emergency"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
-    status = Column(Enum(Status), default=Status.in_progress)
-    start = Column(DateTime, default=datetime.datetime.utcnow)
-    end = Column(DateTime, nullable=True)
-    latitude = Column(Float, nullable=False)
-    longitude = Column(Float, nullable=False)
+    id: UUID = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
+    status: Status = Column(Enum(Status), default=Status.in_progress)
+    start: datetime = Column(DateTime, default=datetime.utcnow)
+    end: datetime = Column(DateTime, nullable=True)
+    latitude: float = Column(Float, nullable=False)
+    longitude: float = Column(Float, nullable=False)

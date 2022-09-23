@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Enum
+from sqlalchemy import Column, String, Enum, Optional
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
 import enum
@@ -15,10 +15,10 @@ class Role(enum.Enum):
 class RegisteredUser(Base):
     __tablename__ = "registered_users"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
-    phone_number = Column(String, unique=True, index=True)
-    email = Column(String, unique=True, index=True)
-    role = Column(Enum(Role), default=Role.user)
-    first_name = Column(String, index=True)
-    last_name = Column(String, index=True)
-    hashed_password = Column(String, nullable=True)
+    id: UUID = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
+    phone_number: str = Column(String, unique=True, index=True)
+    email: str = Column(String, unique=True, index=True)
+    role: Role = Column(Enum(Role), default=Role.user)
+    first_name: str = Column(String, index=True)
+    last_name: str = Column(String, index=True)
+    hashed_password: Optional[str] = Column(String, nullable=True)

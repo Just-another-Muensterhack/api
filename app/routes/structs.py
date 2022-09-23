@@ -4,8 +4,8 @@ from uuid import UUID
 # requests
 
 
-class SuccessResponse(BaseModel):
-    success: bool
+class UuidRequest(BaseModel):
+    id: UUID
 
 
 # responses
@@ -13,3 +13,7 @@ class SuccessResponse(BaseModel):
 
 class UuidResponse(BaseModel):
     id: UUID
+
+
+class SuccessResponse(BaseModel):
+    success: bool

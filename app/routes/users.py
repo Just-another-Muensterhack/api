@@ -13,8 +13,10 @@ from pydantic import BaseModel
 
 user_router = APIRouter(prefix="/users")
 
+
 class User:
     id: UUID
+
 
 # Request Types
 class UserDelete(BaseModel):
@@ -53,14 +55,18 @@ class UpdatePosition(BaseModel):
     lat: float
     lon: float
 
+
 # Response Types
+
 
 class SessionResponse(BaseModel):
     success: bool
     jwt: str
 
+
 class DevicesList(BaseModel):
     devices: List[UUID]
+
 
 # does not require auth
 @user_router.get("/create", response_model=UuidResponse)
@@ -104,6 +110,7 @@ async def user_promote(request: PromoteUser, current_user: User = Depends(get_cu
 
     return {"success": True}
 
+
 @user_router.put("/device", response_model=UuidResponse)
 async def user_device_add(request: AddDevice, current_user: User = Depends(get_current_user)):
     """
@@ -122,6 +129,7 @@ async def user_device_remove(request: RemoveDevice, current_user: User = Depends
 
     return {"success": True}
 
+
 @user_router.post("/device/update", response_model=SuccessResponse)
 async def user_device_remove(request: UpdatePosition, current_user: User = Depends(get_current_user)):
 
@@ -131,6 +139,7 @@ async def user_device_remove(request: UpdatePosition, current_user: User = Depen
 
     return {"success": True}
 
+
 @user_router.post("/device/list", response_model=DevicesList)
 async def user_promote(request: PromoteUser, current_user: User = Depends(get_current_user)):
 
@@ -139,5 +148,3 @@ async def user_promote(request: PromoteUser, current_user: User = Depends(get_cu
     """
 
     return {"devices": []}
-
-

@@ -1,5 +1,5 @@
 import uuid
-import datetime
+from datetime import datetime
 from sqlalchemy import Column, Float, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
@@ -16,7 +16,7 @@ class Device(Model):
     user_id: UUID = relationship(User.id)
     latitude: float = Column(Float, nullable=False)
     longitude: float = Column(Float, nullable=False)
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.utcnow)
 
     @staticmethod
     def get(device_id: uuid.UUID):
@@ -30,7 +30,7 @@ class Device(Model):
                 user_id=device.user_id,
                 latitude=device.latitude,
                 longitude=device.longitude,
-                created_at=datetime.datetime.utcnow(),
+                created_at=datetime.utcnow(),
             )
         )
         session.commit()

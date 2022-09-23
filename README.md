@@ -1,4 +1,4 @@
 # helpwave
 
 
-Ersthelfer App!
+Ersthelfer App für hilfsbedürftige Menschen!

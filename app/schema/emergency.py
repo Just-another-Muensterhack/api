@@ -36,7 +36,7 @@ class Emergency(Model):
                 status=emergency.status,
                 latitude=emergency.latitude,
                 longitude=emergency.longitude,
-                created_at=datetime.datetime.utcnow()
+                created_at=datetime.datetime.utcnow(),
             )
         )
         session.commit()
@@ -48,7 +48,7 @@ class Emergency(Model):
                 status=emergency.status,
                 latitude=emergency.latitude,
                 longitude=emergency.longitude,
-                closed_at=emergency.closed_at
+                closed_at=emergency.closed_at,
             )
         )
         session.commit()

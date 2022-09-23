@@ -35,7 +35,7 @@ class EmergencyUser(Model):
                 id=uuid.uuid4(),
                 emergency_id=emergency_user.emergency_id,
                 type=emergency_user.type,
-                created_at=datetime.datetime.utcnow()
+                created_at=datetime.datetime.utcnow(),
             )
         )
         session.commit()
@@ -51,5 +51,7 @@ class EmergencyUser(Model):
 
     @staticmethod
     def delete(emergency_user_id: uuid.UUID):
-        session.query(EmergencyUser).filter(EmergencyUser.id == emergency_user_id).delete()
+        session.query(EmergencyUser).filter(
+            EmergencyUser.id == emergency_user_id
+        ).delete()
         session.commit()

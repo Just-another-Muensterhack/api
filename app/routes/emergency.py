@@ -50,7 +50,9 @@ class EmergencyList(BaseModel):
 
 # does not require auth
 @emergency_router.post("/create", response_model=UuidResponse)
-async def user_create(request: CreateEmergency, current_user: User = Depends(get_current_user)):
+async def user_create(
+    request: CreateEmergency, current_user: User = Depends(get_current_user)
+):
     """
     creates an emergency and taking the coordinates from specified device
     """
@@ -90,7 +92,9 @@ async def emergency_update(current_user: User = Depends(get_current_user)):
 
 
 @emergency_router.put("/log/single", response_model=SuccessResponse)
-async def emergency_log_single(log: Question, current_user: User = Depends(get_current_user)):
+async def emergency_log_single(
+    log: Question, current_user: User = Depends(get_current_user)
+):
     """
     setting one question
     """
@@ -98,7 +102,9 @@ async def emergency_log_single(log: Question, current_user: User = Depends(get_c
 
 
 @emergency_router.put("/log/bulk", response_model=SuccessResponse)
-async def emergency_log_single(log: BulkLog, current_user: User = Depends(get_current_user)):
+async def emergency_log_single(
+    log: BulkLog, current_user: User = Depends(get_current_user)
+):
     """
     setting multiple questions
     """

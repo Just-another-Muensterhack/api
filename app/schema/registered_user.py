@@ -41,14 +41,16 @@ class RegisteredUser(Model):
                 first_name=user.first_name,
                 last_name=user.last_name,
                 hashed_password=user.hashed_password,
-                created_at=datetime.utcnow()
+                created_at=datetime.utcnow(),
             )
         )
         session.commit()
 
     @staticmethod
     def update(user):
-        existing_user = session.query(RegisteredUser).filter(RegisteredUser.id == user.id)
+        existing_user = session.query(RegisteredUser).filter(
+            RegisteredUser.id == user.id
+        )
         existing_user.update(
             {
                 RegisteredUser.phone_number: user.phone_number,

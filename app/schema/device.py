@@ -12,7 +12,9 @@ from database import session
 class Device(Model):
     __tablename__ = "devices"
 
-    id: UUID = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
+    id: UUID = Column(
+        UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4
+    )
     user_id: UUID = relationship(User.id)
     latitude: float = Column(Float, nullable=False)
     longitude: float = Column(Float, nullable=False)
@@ -30,7 +32,7 @@ class Device(Model):
                 user_id=device.user_id,
                 latitude=device.latitude,
                 longitude=device.longitude,
-                created_at=datetime.datetime.utcnow()
+                created_at=datetime.datetime.utcnow(),
             )
         )
         session.commit()
@@ -38,10 +40,7 @@ class Device(Model):
     @staticmethod
     def update(device):
         session.query(Device).filter(Device.id == device.id).update(
-            Device(
-                latitude=device.latitude,
-                longitude=device.longitude
-            )
+            Device(latitude=device.latitude, longitude=device.longitude)
         )
         session.commit()
 

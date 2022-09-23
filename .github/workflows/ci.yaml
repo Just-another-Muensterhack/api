@@ -85,7 +85,11 @@ jobs:
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
 
-
       - name: Trigger CD
         run: |
           curl https://hook.helpwave.de/cgi-bin/deploy.cgi?${{ steps.extract_branch.outputs.branch }}
+
+      - name: Trigger OpenAPI update in frontend repo
+        if: ${{ steps.extract_branch.outputs.branch == 'main' }}
+        run: |
+          curl -XPOST -u "${{ secrets.PAT_USERNAME}}:${{secrets.PAT_TOKEN}}" -H "Accept: application/vnd.github.everest-preview+json" -H "Content-Type: application/json" https://api.github.com/repos/Just-another-Muensterhack/helpwave-frontend/dispatches --data '{"event_type": "build_application"}'

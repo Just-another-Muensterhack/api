@@ -14,7 +14,7 @@ engine = create_engine(
     f"postgresql://"
     f"{user}:{password}@{host}:{port}"
     f"/{database}",
-    echo=True)
+    echo=True,)
 
 Model = declarative_base()
 

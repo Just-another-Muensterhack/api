@@ -2,10 +2,6 @@ from typing import Union
 
 from fastapi import FastAPI
 
-
-from app import db
-from app.db import Base
-
 app = FastAPI()
 
 

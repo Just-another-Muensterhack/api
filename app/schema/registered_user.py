@@ -48,9 +48,7 @@ class RegisteredUser(Model):
 
     @staticmethod
     def update(user):
-        existing_user = session.query(RegisteredUser).filter(
-            RegisteredUser.id == user.id
-        )
+        existing_user = session.query(RegisteredUser).filter(RegisteredUser.id == user.id)
         existing_user.update(
             {
                 RegisteredUser.phone_number: user.phone_number,

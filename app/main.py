@@ -16,6 +16,7 @@ app = FastAPI(
 )
 
 app.include_router(routes.users.user_router)
+app.include_router(routes.emergency.emergency_router)
 
 if __name__ == "__main__":
     import uvicorn

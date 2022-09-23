@@ -1,8 +1,8 @@
 from .jwt import Token, get_current_user
 from .structs import SuccessResponse, UuidResponse
 
-from schema.users import User
-from schema.emergencie import Status
+from schema.user import User
+from schema.emergency import Status
 
 from typing import Union, List
 from uuid import UUID

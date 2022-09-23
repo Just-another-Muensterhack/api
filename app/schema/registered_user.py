@@ -1,9 +1,9 @@
-from sqlalchemy import Column, String, Enum
+from sqlalchemy import Column, String, Enum, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
 import enum
-import datetime
 
+from datetime import datetime
 from database import Model
 from database import session
 
@@ -41,8 +41,23 @@ class RegisteredUser(Model):
                 first_name=user.first_name,
                 last_name=user.last_name,
                 hashed_password=user.hashed_password,
-                created_at=datetime.datetime.utcnow(),
+                created_at=datetime.utcnow()
             )
+        )
+        session.commit()
+
+    @staticmethod
+    def update(user):
+        existing_user = session.query(RegisteredUser).filter(RegisteredUser.id == user.id)
+        existing_user.update(
+            {
+                RegisteredUser.phone_number: user.phone_number,
+                RegisteredUser.email: user.email,
+                RegisteredUser.role: user.role,
+                RegisteredUser.first_name: user.first_name,
+                RegisteredUser.last_name: user.last_name,
+                RegisteredUser.hashed_password: user.hashed_password,
+            }
         )
         session.commit()
 

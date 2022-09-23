@@ -18,10 +18,3 @@ def read_root():
 def read_item(item_id: int, q: Union[str, None] = None):
     return {"item_id": item_id, "q": q}
 
-
-if __name__ == "__main__":
-    import uvicorn
-
-    Base.metadata.create_all(bind=db.engine)
-
-    uvicorn.run(app, host="localhost", port=8000)

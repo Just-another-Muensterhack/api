@@ -1,7 +1,8 @@
-from sqlalchemy import Column, String, Enum
+from sqlalchemy import Column, String, Enum, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
 import enum
+import datetime
 
 from database import Model
 from database import session
@@ -23,19 +24,29 @@ class RegisteredUser(Model):
     first_name = Column(String, index=True)
     last_name = Column(String, index=True)
     hashed_password = Column(String, nullable=True)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
     @staticmethod
     def get(user_id: uuid.UUID):
-        return session.query(User).get(user_id)
+        return session.query(RegisteredUser).get(user_id)
 
     @staticmethod
-    def create():
+    def create(user):
         session.add(
-            RegisteredUser(id=uuid.uuid4(), created_at=datetime.datetime.utcnow())
+            RegisteredUser(
+                id=uuid.uuid4(),
+                phone_number=user.phone_number,
+                email=user.email,
+                role=Role.user,
+                first_name=user.first_name,
+                last_name=user.last_name,
+                hashed_password=user.hashed_password,
+                created_at=datetime.datetime.utcnow(),
+            )
         )
         session.commit()
 
     @staticmethod
     def delete(user_id: uuid.UUID):
-        session.query(User).filter(User.id == user_id).delete()
+        session.query(RegisteredUser).filter(RegisteredUser.id == user_id).delete()
         session.commit()

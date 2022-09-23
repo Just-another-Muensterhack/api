@@ -22,12 +22,6 @@ class Config:
     def __init__(self):
         self.configs = dict(os.environ)
 
-        if not self.envs_are_ready():
-            raise "ERROR while reading envs"
-
-    def envs_are_ready(self) -> bool:
-        return True
-
     def get_postgres_config(self) -> PostgresConfig:
         if 'POSTGRES_HOST' in tuple(self.configs.keys()):
             host = self.configs["POSTGRES_HOST"]

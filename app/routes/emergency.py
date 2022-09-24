@@ -23,7 +23,7 @@ async def emergency_create(request: EmergencyCreate, current_user: User = Depend
     """
 
     device: Device = Device.query.get(request.device)
-    emergency: Emergency = Emergency(device = device.uuid)
+    emergency: Emergency = Emergency(device=device.uuid)
 
     return {"id": uuid4()}
 

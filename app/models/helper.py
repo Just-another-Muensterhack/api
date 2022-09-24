@@ -18,4 +18,3 @@ class DeviceUpdateCoordinates(BaseModel):
     device: UUID
     latitude: float
     longitude: float
-

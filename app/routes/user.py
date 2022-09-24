@@ -73,6 +73,7 @@ async def user_device_create(request: DeviceCreate, current_user: User = Depends
 
     return {"uuid": device.uuid}
 
+
 @user_router.delete("/device", response_model=SuccessResponse)
 async def user_device_delete(request: DeviceDelete, current_user: User = Depends(get_current_user)):
     """

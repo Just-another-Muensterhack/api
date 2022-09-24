@@ -3,8 +3,9 @@ from enum import Enum
 from uuid import uuid4, UUID
 
 from pydantic import BaseModel
-from sqlalchemy import Column, Enum as EnumColumn, DateTime, Float
+from sqlalchemy import Column, Enum as EnumColumn, DateTime, Float, ForeignKey, String
 from sqlalchemy.dialects.postgresql import UUID as UUIDColumn
+from sqlalchemy.orm import relationship
 
 from database import Base
 

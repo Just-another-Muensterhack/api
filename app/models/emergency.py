@@ -1,14 +1,12 @@
-from uuid import uuid4, UUID
-from enum import Enum
 from datetime import datetime
+from enum import Enum
+from uuid import uuid4, UUID
 
-from database import session, Base
-
+from pydantic import BaseModel
 from sqlalchemy import Column, Enum as EnumColumn, DateTime, Float
 from sqlalchemy.dialects.postgresql import UUID as UUIDColumn
-from pydantic import BaseModel, ValidationError, validator
 
-from database import Base, session
+from database import Base
 
 
 class Status(Enum):
@@ -38,21 +36,23 @@ class EmergencyBase(BaseModel):
         orm_mode = True
 
 
-
-
 class EmergencyCreate(BaseModel):
     device: UUID
     latitude: float
     longitude: float
 
+
 class EmergencyRead(BaseModel):
-    device: UUID
+    emergency: UUID
+
 
 class EmergencyDelete(BaseModel):
-    device: UUID
+    emergency: UUID
+
 
 class EmergencyUpdate(BaseModel):
     status: Status
+
 
 class EmergencyList(BaseModel):
     emergencies: list[EmergencyBase]
@@ -68,8 +68,6 @@ class Question(BaseModel):
 class QuestionBulk(BaseModel):
     questions: list[Question]
 
-class EmergencyUpdateCoordinates(BaseModel):
-    emergency: UUID
-    latitude: float
-    longitude: float
 
+class EmergencyUUID(BaseModel):
+    uuid: UUID

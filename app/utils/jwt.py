@@ -1,36 +1,19 @@
-from typing import Optional
+import os
 from datetime import datetime, timedelta
 from uuid import UUID
-import os
-import binascii
-import logging
 
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from passlib.context import CryptContext
-from pydantic import BaseModel
+from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
-import json
+from passlib.context import CryptContext
 
-from models.user import User
-from models.security import TokenData
 from database import session
-
-
-def generare_secret_key() -> str:
-    return binascii.b2a_hex(os.urandom(32))
+from models.security import TokenData
+from models.user import User
 
 
 def get_secret_key() -> str:
-    # this sets a default value for the SECRET_KEY_FILE
-    env_file_path: Optional[str] = os.getenv("SECRET_KEY_FILE")
-
-    if not env_file_path:
-        logging.warn("generating temporary secret key")
-        return generare_secret_key()
-
-    with open(env_file_path) as f:
-        return f.read()
+    return os.getenv("JWT_SECRET", default="A" * 32)
 
 
 SECRET_KEY: str = get_secret_key()
@@ -38,7 +21,6 @@ ALGORITHM: str = "HS256"
 ACCESS_TOKEN_EXPIRE_DAYS: int = 30
 TOKEN_EXPIRATION_DAYS: int = 365
 pwd_context: CryptContext = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
 
 oauth2_scheme: OAuth2PasswordBearer = OAuth2PasswordBearer(tokenUrl="token")
 

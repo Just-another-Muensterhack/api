@@ -6,9 +6,11 @@ In an emergency, this app makes it possible to inform qualified helpers in the s
 ## Development
 ### python venv setup
 ```bash
-git clone https://github.com/Just-another-Muensterhack/helpwave-backend.git
+git clone https://github.com/Just-another-Muensterhack/helpwave-backend.git helpwave
 python -m venv venv
 source venv/bin/activate
+python -m pip install --upgrade pip
+pip install -r app/requirements.txt
 ```
 
 ### Database Setup
@@ -49,21 +51,33 @@ python3 ./app/main.py
 ```
 
 ### Model migrations [alembic]
-Change into the app directory
-
 Running our first migration ([docs](https://alembic.sqlalchemy.org/en/latest/tutorial.html#running-our-first-migration))
 ```bash
-alembic upgrade head
+cd app && alembic upgrade head
 ```
 
 Auto generating migration ([docs](https://alembic.sqlalchemy.org/en/latest/autogenerate.html))
 ```bash
-alembic revision --autogenerate -m "<your message>"
+cd app && alembic revision --autogenerate -m "<your message>"
 ```
 
 [MORE DOCS](https://alembic.sqlalchemy.org/en/latest/tutorial.html#running-our-first-migration)
 
-### Linter Hacks
+### Hacks
+
+#### Linter
 ```bash
 python -m black ./app/ --exclude --check --line-length 120
+```
+
+#### Postgres
+restart plain postgres container
+```bash
+docker-compose down postgres
+```
+```bash
+sudo rm -rf /srv/postgres/postgres-data
+```
+```bash
+docker-compose up -d postgres
 ```

@@ -5,7 +5,8 @@ import uuid
 from sqlalchemy import Column, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 
-from db import Base
+from database import Model
+from database import session
 
 
 class Role(enum.Enum):
@@ -14,8 +15,22 @@ class Role(enum.Enum):
     user = 2
 
 
-class User(Base):
+class User(Model):
     __tablename__ = "users"
 
-    id: UUID = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
-    created_at: datetime = Column(DateTime, default=datetime.utcnow)
+    id = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    @staticmethod
+    def get(user_id: uuid.UUID):
+        return session.query(User).get(user_id)
+
+    @staticmethod
+    def create():
+        session.add(User(id=uuid.uuid4(), created_at=datetime.utcnow()))
+        session.commit()
+
+    @staticmethod
+    def delete(user_id: uuid.UUID):
+        session.query(User).filter(User.id == user_id).delete()
+        session.commit()

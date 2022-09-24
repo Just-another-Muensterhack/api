@@ -9,6 +9,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from passlib.context import CryptContext
 from pydantic import BaseModel
 
+from schema.user import User
 
 def generare_secret_key() -> str:
     binascii.b2a_hex(os.urandom(32))
@@ -28,7 +29,9 @@ def get_secret_key() -> str:
 SECRET_KEY: str = get_secret_key()
 ALGORITHM: str = "HS256"
 ACCESS_TOKEN_EXPIRE_DAYS: int = 30
+TOKEN_EXPIRATION_DAYS: int = 365
 pwd_context: CryptContext = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 
 oauth2_scheme: OAuth2PasswordBearer = OAuth2PasswordBearer(tokenUrl="token")
 
@@ -67,8 +70,21 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         raise credentials_exception
 
     # get actuall user struct from database
-    # user = get_user(fake_users_db, user_id=token_data.user_id)
+    user = User.get(user_id=token_data.user_id)
 
     if not user:
         raise credentials_exception
     return user
+
+def create_access_token(user_id: UUID):
+    expire = datetime.utcnow() + timedelta(days=TOKEN_EXPIRATION_DAYS)
+
+    to_encode: dict = {
+        "id": user_id,
+        "exp": expire
+    }
+
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+

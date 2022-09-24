@@ -22,15 +22,21 @@ class User(Model):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     @staticmethod
-    def get(user_id: uuid.UUID):
+    def get(user_id: uuid.UUID) -> 'User':
+        # not sure if this throws something or just returnes NOne
         return session.query(User).get(user_id)
 
     @staticmethod
-    def create():
+    def create() -> 'User':
         session.add(User(id=uuid.uuid4(), created_at=datetime.utcnow()))
         session.commit()
 
     @staticmethod
-    def delete(user_id: uuid.UUID):
-        session.query(User).filter(User.id == user_id).delete()
-        session.commit()
+    def delete(user_id: uuid.UUID) -> bool:
+        try:
+            session.query(User).filter(User.id == user_id).delete()
+            session.commit()
+            return True
+        except:
+            return False
+

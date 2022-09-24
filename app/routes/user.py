@@ -71,20 +71,27 @@ class UserInfo(BaseModel):
 
 
 # does not require auth
-@user_router.post("/create", response_model=UuidResponse)
+@user_router.post("/create", response_model=Token)
 async def user_create():
     """
     creates basic user and returnes basic id from the user
     """
-    return {"id": "random uuid"}
+    user: User = User.create()
 
+    access_token = create_access_token(
+        data={"sub": user.username}, expires_delta=access_token_expires
+    )
+
+    return {"access_token": access_token, "token_type": "bearer"}
 
 @user_router.delete("/delete", response_model=SuccessResponse)
 async def user_delete(request: UserDelete):
     """
     deletes requested user
     """
-    return {"id": "random uuid"}
+    success: bool = User.delete(request.id)
+
+    return {"id": success}
 
 
 # does not require auth
@@ -118,8 +125,8 @@ async def user_promote(request: UuidRequest, current_user: User = Depends(get_cu
     """
     changes role of user to specified
     """
-
-    return {"id": request["id"]}
+    user: User = User.get(request.id)
+    return user
 
 
 @user_router.put("/device", response_model=UuidResponse)

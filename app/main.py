@@ -8,8 +8,11 @@ from database import Base, engine
 
 from sqlalchemy.orm import Session
 from sqlalchemy import select
+from sqlalchemy import func
+
 
 from models.device import Device
+
 
 app = FastAPI(
     title="helpwave-backend",
@@ -49,24 +52,29 @@ async def startup_event():
 
     with Session(engine) as session:
 
-        device1 = Device(
-                    latitude=515712.9,
-                    longitude=515712.2
-        )
+        device1 = Device(latitude=51.961563, longitude=7.628202, geo=func.ST_Point(51.961563, 7.628202))
+        device2 = Device(latitude=52.283333, longitude=8.050000, geo=func.ST_Point(52.283333, 8.050000))
 
         session.add(device1)
-        session.commit()
-
-        # selected_devices = Device.query.all()
-        selected_devices = session.query(Device).all()
-        for device in selected_devices:
-            print(device.longitude)
+        session.add(device2)
 
         session.commit()
 
+        # selected_devices = session.query(Device).all()
+        # for device in selected_devices:
+        #     print(device.longitude)
 
+        # devices = Device()
+        selected_devices_radius = device1.get_devices_within_radius(radius=99999999999999999999999999999999)
+        for device in selected_devices_radius:
+            # distance = session.query(func.ST_DistanceSphere(device.geo, device1.geo)).one()[0]
+            print(len(device))
+        # print(distance)
 
+        distance = func.ST_DistanceSphere(device1.geo, device2.geo)
+        print(distance)
 
+        session.commit()
 
 
 if __name__ == "__main__":

@@ -24,11 +24,36 @@ class Device(Base):
 
     user = relationship("User", back_populates="devices", passive_deletes=True)
 
-    @staticmethod
+    def __repr__(self):
+        return "<Device {name} ({lat}, {lon})>".format(name=self.location, lat=self.latitude, lon=self.longitude)
+
     def get_devices_within_radius(self, radius):
         """Return all devices within a given radius (in meters) of this device."""
 
-        return Device.query.filter(func.ST_Distance_Sphere(Device.geo, self.geo) < radius).all()
+        devices = session.query(Device.uuid).filter(func.ST_DistanceSphere(Device.geo, self.geo) < radius).all()
+        return devices
+
+    @classmethod
+    def add_device(cls, location, longitude, latitude):
+        """Put a new device in the database."""
+
+        geo = "POINT({} {})".format(longitude, latitude)
+        device = Device(longitude=longitude, latitude=latitude, geo=geo)
+
+        session.add(device)
+        session.commit()
+
+    @classmethod
+    def update_geometries(cls):
+        """Using each device's longitude and latitude, add geometry data to db."""
+
+        devices = Device.query.all()
+
+        for device in devices:
+            point = "POINT({} {})".format(device.longitude, device.latitude)
+            device.geo = point
+
+        session.commit()
 
 
 class DeviceDelete(BaseModel):

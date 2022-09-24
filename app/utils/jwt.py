@@ -12,7 +12,8 @@ from pydantic import BaseModel
 from jose import JWTError, jwt
 import json
 
-from schema.user import User
+from models.user import User
+
 
 def generare_secret_key() -> str:
     return binascii.b2a_hex(os.urandom(32))
@@ -38,15 +39,6 @@ pwd_context: CryptContext = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 oauth2_scheme: OAuth2PasswordBearer = OAuth2PasswordBearer(tokenUrl="token")
-
-
-class TokenData(BaseModel):
-    user_id: Optional[UUID]
-
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str
 
 
 def verify_password(plain_password, hashed_password):
@@ -97,5 +89,3 @@ def create_access_token(uuid: UUID):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
     return encoded_jwt
-
-

@@ -1,14 +1,14 @@
 from enum import Enum
 import uuid
 
-from sqlalchemy import Column, Enum as EnumColumn, DateTime 
+from sqlalchemy import Column, Enum as EnumColumn, DateTime
 from sqlalchemy.orm import relationship
 
 from emergency import Emergency
 from user import User
-from database import Model
 import datetime
-from database import session
+
+from database import session, base
 
 
 class Type(Enum):
@@ -16,7 +16,7 @@ class Type(Enum):
     AIDE = 1
 
 
-class EmergencyUser(Model):
+class EmergencyUser(base):
     __tablename__ = "emergency_user"
 
     user_uuid = Column(UUIDColumn(as_uuid=True), ForeignKey("user.uuid", ondelete="CASCADE"))
@@ -26,4 +26,3 @@ class EmergencyUser(Model):
 
     user = relationship("User", foreign_keys=[user_uuid], passive_deletes=True)
     emergency = relationship("Emergency", foreign_keys=[emergency_uuid], passive_deletes=True)
-

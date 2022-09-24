@@ -16,7 +16,7 @@ engine = create_engine(
     echo=True,
 )
 
-Model = declarative_base()
+base = declarative_base()
 
-Session = sessionmaker(bind=engine)
-session = Session()
+session_maker = sessionmaker(bind=engine)
+session = session_maker()

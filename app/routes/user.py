@@ -1,7 +1,9 @@
-from utils.jwt import Token, get_current_user, create_access_token
-from utils.structs import SuccessResponse, UuidResponse, UuidRequest
+from utils.jwt import get_current_user, create_access_token
 
-from schema.user import User, Role, session
+from models.user import session, User, UserDelete, UserRegister, UserLogin, UserRead
+from models.device import DeviceCreate, DeviceDelete, DeviceUpdatePosition, DevicesList
+from models.security import Token
+from models.helper import SuccessResponse, UuidResponse, UuidRequest
 
 from typing import Optional
 from uuid import UUID
@@ -12,62 +14,6 @@ from jose import JWTError, jwt
 from pydantic import BaseModel
 
 user_router = APIRouter(prefix="/user")
-
-
-# Request Types
-class UserDelete(BaseModel):
-    user_uuid: UUID
-
-
-class UserRegister(BaseModel):
-    user_uuid: UUID
-    phone: str
-    password: str
-    first_name: str
-    second_name: str
-
-
-class UserLogin(BaseModel):
-    email: str
-    password_hash: str
-
-
-class PromoteUser(BaseModel):
-    user_uuid: UUID
-    role: Role
-
-
-class AddDevice(BaseModel):
-    user_uuid: UUID
-
-
-class RemoveDevice(BaseModel):
-    device_uuid: UUID
-
-
-class UpdatePosition(BaseModel):
-    device_uuid: UUID
-    lat: float
-    lon: float
-
-
-# Response Types
-
-
-class SessionResponse(BaseModel):
-    success: bool
-    jwt: str
-
-
-class DevicesList(BaseModel):
-    devices: list[UUID]
-
-
-class UserInfo(BaseModel):
-    uuid: UUID
-    email: Optional[str]
-    role: Optional[int]
-
 
 # does not require auth
 @user_router.post("/create", response_model=Token)
@@ -97,15 +43,15 @@ async def user_delete(request: UserDelete):
 
     if not user:
         return {"success": False}
-    
+
     session.delete(user)
     session.commit()
 
     return {"success": True}
 
 
-@user_router.post("/info", response_model=UserInfo)
-async def user_info(current_user: User = Depends(get_current_user)):
+@user_router.post("/info", response_model=UserRead)
+async def user_read(current_user: User = Depends(get_current_user)):
     """
     changes role of user to specified
     """
@@ -114,7 +60,7 @@ async def user_info(current_user: User = Depends(get_current_user)):
 
 
 @user_router.put("/device", response_model=UuidResponse)
-async def user_device_add(request: AddDevice, current_user: User = Depends(get_current_user)):
+async def user_device_create(request: DeviceCreate, current_user: User = Depends(get_current_user)):
     """
     adds a new device to a user
     """
@@ -129,7 +75,7 @@ async def user_device_add(request: AddDevice, current_user: User = Depends(get_c
 
 
 @user_router.delete("/device", response_model=SuccessResponse)
-async def user_device_remove(request: RemoveDevice, current_user: User = Depends(get_current_user)):
+async def user_device_delete(request: DeviceDelete, current_user: User = Depends(get_current_user)):
     """
     removes device from user
     """
@@ -138,7 +84,7 @@ async def user_device_remove(request: RemoveDevice, current_user: User = Depends
 
     if not device:
         return {"success": False}
-    
+
     session.delete(device)
     session.commit()
 
@@ -146,7 +92,7 @@ async def user_device_remove(request: RemoveDevice, current_user: User = Depends
 
 
 @user_router.post("/device/update", response_model=SuccessResponse)
-async def user_device_update_position(request: UpdatePosition, current_user: User = Depends(get_current_user)):
+async def user_device_update_position(request: DeviceUpdatePosition, current_user: User = Depends(get_current_user)):
     """
     updates the position of specified device
     """
@@ -158,17 +104,16 @@ async def user_device_update_position(request: UpdatePosition, current_user: Use
 
     device.latitude = request.lat
     device.longitude = request.lon
-    
+
     session.commit()
 
     return {"success": True}
 
 
 @user_router.post("/device/list", response_model=DevicesList)
-async def user_device_list(current_user: User = Depends(get_current_user)):
+async def user_device_read(current_user: User = Depends(get_current_user)):
     """
     list all devices belonging to this user
     """
 
     return {"devices": session.query(Device.uuid).filter_by(user_uuid=current_user.uuid).all()}
-

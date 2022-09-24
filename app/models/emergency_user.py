@@ -11,6 +11,7 @@ from database import Base
 class Type(Enum):
     PATIENT = 0
     AIDE = 1
+    NONE = 2
 
 
 class EmergencyUser(Base):

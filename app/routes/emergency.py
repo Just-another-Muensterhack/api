@@ -4,7 +4,7 @@ from database import session
 from models.device import Device
 from models.emergency import Emergency, EmergencyCreate, EmergencyList, Question, QuestionBulk, EmergencyRead, \
     EmergencyDelete, Status, EmergencyUUID, EmergencyBase
-from models.emergency_user import EmergencyUser
+from models.emergency_user import EmergencyUser, Type
 from models.helper import SuccessResponse, UuidResponse
 from models.user import User
 from utils.jwt import get_current_user
@@ -69,7 +69,7 @@ async def emergency_accept(request: EmergencyUUID, current_user: User = Depends(
     """
     accept helping
     """
-    if not Emergency.query.get(uuid=request.uuid):
+    if not session.query(Emergency).get(uuid=request.uuid):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
     emergency_user = EmergencyUser(user_uuid=current_user.uuid, emergency_uuid=request.uuid)
@@ -81,10 +81,17 @@ async def emergency_accept(request: EmergencyUUID, current_user: User = Depends(
 
 
 @emergency_router.post("/deny", response_model=SuccessResponse)
-async def emergency_deny(_: EmergencyUUID, __: User = Depends(get_current_user)):
+async def emergency_deny(request: EmergencyUUID, current_user: User = Depends(get_current_user)):
     """
-    accept helping
+    deny helping
     """
+    if not session.query(Emergency).get(uuid=request.uuid):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
+    emergency_user = EmergencyUser(user_uuid=current_user.uuid, emergency_uuid=request.uuid, type=Type.NONE)
+
+    session.add(emergency_user)
+    session.commit()
 
     return {"success": True}
 

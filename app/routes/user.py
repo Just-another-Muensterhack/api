@@ -6,7 +6,7 @@ from models.security import Token
 from models.helper import SuccessResponse, UuidResponse, UuidRequest
 
 from typing import Optional
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from fastapi import Depends, APIRouter, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm

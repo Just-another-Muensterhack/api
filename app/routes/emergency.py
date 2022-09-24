@@ -5,7 +5,7 @@ from models.emergency import Status, Emergency, EmergencyCreate, EmergencyBase, 
 from models.helper import SuccessResponse, UuidResponse, UuidRequest, DeviceUpdateCoordinates
 from models.security import Token
 
-from uuid import UUID
+from uuid import UUID, uuid4
 from datetime import datetime
 
 from fastapi import Depends, APIRouter, HTTPException, status
@@ -21,7 +21,7 @@ async def emergency_create(request: EmergencyCreate, current_user: User = Depend
     """
     creates an emergency and taking the coordinates from specified device
     """
-    return {"id": "random uuid"}
+    return {"id": uuid4()}
 
 
 @emergency_router.delete("/terminate", response_model=SuccessResponse)

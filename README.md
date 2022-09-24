@@ -66,6 +66,11 @@ cd app && alembic revision --autogenerate -m "<your message>"
 ### Hacks
 
 #### Linter
+Install black
+```bash
+pip install black
+```
+Reformat backend
 ```bash
 python -m black ./app/ --exclude --check --line-length 120
 ```

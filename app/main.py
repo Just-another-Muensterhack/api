@@ -6,6 +6,11 @@ from fastapi import FastAPI
 
 from database import Base, engine
 
+from sqlalchemy.orm import Session
+from sqlalchemy import select
+
+from models.device import Device
+
 app = FastAPI(
     title="helpwave-backend",
     description="Backend which manages helpwave users and emergencies",
@@ -41,6 +46,27 @@ app.include_router(routes.emergency.emergency_router)
 @app.on_event("startup")
 async def startup_event():
     Base.metadata.create_all(bind=engine)
+
+    with Session(engine) as session:
+
+        device1 = Device(
+                    latitude=515712.9,
+                    longitude=515712.2
+        )
+
+        session.add(device1)
+        session.commit()
+
+        # selected_devices = Device.query.all()
+        selected_devices = session.query(Device).all()
+        for device in selected_devices:
+            print(device.longitude)
+
+        session.commit()
+
+
+
+
 
 
 if __name__ == "__main__":

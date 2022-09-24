@@ -4,7 +4,7 @@ from .structs import SuccessResponse, UuidResponse
 from schema.user import User
 from schema.emergency import Status
 
-from uuid import UUID
+from uuid import UUID, uuid4
 from datetime import datetime
 
 from fastapi import Depends, APIRouter, HTTPException, status
@@ -50,11 +50,11 @@ class EmergencyList(BaseModel):
 
 # does not require auth
 @emergency_router.post("/create", response_model=UuidResponse)
-async def user_create(request: CreateEmergency, current_user: User = Depends(get_current_user)):
+async def user_create(request: CreateEmergency):
     """
     creates an emergency and taking the coordinates from specified device
     """
-    return {"id": "random uuid"}
+    return {"id": uuid4()}
 
 
 @emergency_router.post("/coordinates", response_model=SuccessResponse)

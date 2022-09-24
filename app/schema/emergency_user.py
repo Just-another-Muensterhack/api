@@ -51,5 +51,7 @@ class EmergencyUser(Model):
 
     @staticmethod
     def delete(emergency_user_id: uuid.UUID):
-        session.query(EmergencyUser).filter(EmergencyUser.id == emergency_user_id).delete()
+        session.query(EmergencyUser).filter(
+            EmergencyUser.id == emergency_user_id
+        ).delete()
         session.commit()

@@ -70,7 +70,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         raise credentials_exception
 
     # get actuall user struct from database
-    user = User.get(user_id=token_data.user_id)
+    user = User.query.get(token_data.user_id)
 
     if not user:
         raise credentials_exception

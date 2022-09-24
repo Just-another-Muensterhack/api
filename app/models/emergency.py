@@ -50,6 +50,10 @@ class EmergencyList(BaseModel):
     emergencies: list[EmergencyBase]
 
 
+class EmergencyLog(BaseModel):
+    emergency: UUID
+
+
 class QuestionModel(Base):
     __tablename__ = "question"
 

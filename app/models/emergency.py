@@ -38,9 +38,13 @@ class EmergencyBase(BaseModel):
         orm_mode = True
 
 
+
+
 class EmergencyCreate(BaseModel):
     device: UUID
 
+class EmergencyRead(BaseModel):
+    device: UUID
 
 class EmergencyUpdate(BaseModel):
     status: Status
@@ -59,3 +63,9 @@ class Question(BaseModel):
 
 class QuestionBulk(BaseModel):
     questions: list[Question]
+
+class EmergencyUpdateCoordinates(BaseModel):
+    device: UUID
+    latitude: float
+    longitude: float
+

@@ -13,8 +13,3 @@ class UuidResponse(BaseModel):
 class SuccessResponse(BaseModel):
     success: bool
 
-
-class DeviceUpdateCoordinates(BaseModel):
-    device: UUID
-    latitude: float
-    longitude: float

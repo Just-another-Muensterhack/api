@@ -13,6 +13,8 @@ from jose import JWTError, jwt
 import json
 
 from models.user import User
+from models.security import TokenData
+from database import session
 
 
 def generare_secret_key() -> str:
@@ -70,7 +72,12 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         raise credentials_exception
 
     # get actuall user struct from database
+<<<<<<< HEAD
     user = User.query.get(token_data.user_id)
+=======
+    user = session.query(User.uuid).filter_by(uuid=user_id).first()
+    # user = User.query.get(uuid=user_id)
+>>>>>>> origin/main
 
     if not user:
         raise credentials_exception

@@ -4,8 +4,9 @@ from datetime import datetime
 
 from database import session, Base
 
-from sqlalchemy import Column, Enum as EnumColumn, DateTime, Float
+from sqlalchemy import Column, Enum as EnumColumn, DateTime, Float, ForeignKey, String
 from sqlalchemy.dialects.postgresql import UUID as UUIDColumn
+from sqlalchemy.orm import relationship
 from pydantic import BaseModel, ValidationError, validator
 
 from database import Base, session

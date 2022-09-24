@@ -1,3 +1,5 @@
+import requests
+
 from utils.jwt import get_current_user
 
 from models.user import User
@@ -104,16 +106,12 @@ async def emergency_log_info(request: EmergencyLog, current_user: User = Depends
 
     def _lookup(tag: str, lang: str = "de") -> str:
         # TODO don't we have a local copy of the graph.json anywhere in the repository?!
-        import requests
-
         return graph_data.get("language").get(lang).get(tag)
 
     def _get_hints(tag: str, lang: str = "de") -> list[str]:
         ret = []
         # TODO don't we have a local copy of the graph.json anywhere in the repository?!
         # grab all possibles responses and append all possible answers from the patient (=hints) to the list
-        import requests
-
         responses = graph_data.get("nodes").get(tag).get("responses")
         for resp in responses:
             ret.append(_lookup(resp.get("hint"), lang))

@@ -4,7 +4,7 @@ from .structs import SuccessResponse, UuidResponse, UuidRequest
 from schema.user import User, Role
 
 from typing import Optional
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from fastapi import Depends, APIRouter, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -119,12 +119,12 @@ async def user_promote(request: UuidRequest, current_user: User = Depends(get_cu
 
 
 @user_router.put("/device", response_model=UuidResponse)
-async def user_device_add(current_user: User = Depends(get_current_user)):
+async def user_device_add():  # TODO: add auth back in
     """
     adds a new device to a user
     """
 
-    return {"id": uuid.uud4()}
+    return {"id": uuid4()}
 
 
 @user_router.delete("/device", response_model=SuccessResponse)

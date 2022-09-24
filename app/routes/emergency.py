@@ -87,6 +87,32 @@ async def emersgency_log_bulk(log: QuestionBulk, current_user: User = Depends(ge
 @emergency_router.get("/log", response_model=QuestionBulk)
 async def emergency_log_info(current_user: User = Depends(get_current_user)):
     """
-    setting multiple questions
+    returns a list of all questions the patient answered before the first responder arrived
     """
-    return {"questions": []}
+    
+    def _lookup(tag: str, lang: str = "de") -> str:
+        # TODO don't we have a local copy of the graph.json anywhere in the repository?!
+        import requests
+        return requests.get(
+            "https://raw.githubusercontent.com/Just-another-Muensterhack/helpwave-static/main/graph.json"
+        ).json().get("language").get(lang).get(tag)
+
+    def get_hints(tag: str, lang: str = "de") -> list[str]:
+        ret = []
+        # TODO don't we have a local copy of the graph.json anywhere in the repository?!
+        import requests
+        responses = requests.get(
+            "https://raw.githubusercontent.com/Just-another-Muensterhack/helpwave-static/main/graph.json"
+        ).json().get("nodes").get(tag).get("responses")
+        for resp in responses:
+            ret.append(_lookup(resp.get("hint"), lang))
+        return ret
+
+    return [
+        {
+            "question": _lookup(e.question_tag),
+            "answer": _lookup(e.answer_tag),
+            "time": e.created_at,
+            "hints": _get_hints(e.question_tag),
+        } for e in TODO_all_questions_from_emergency_TODO
+    ]

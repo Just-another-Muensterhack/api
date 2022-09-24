@@ -50,11 +50,25 @@ class EmergencyList(BaseModel):
     emergencies: list[EmergencyBase]
 
 
-# justions answered by the partient to help the rescuers
+class QuestionModel(Base):
+    __tablename__ = "question"
+
+    uuid = Column(UUIDColumn(as_uuid=True), primary_key=True, index=True, default=uuid4)
+
+    emergency_uuid = Column(UUIDColumn(as_uuid=True), ForeignKey("emergency.uuid", ondelete="CASCADE"))
+    emergency = relationship("Emergency", foreign_keys=[emergency_uuid], passive_deletes=True)
+
+    question_tag = Column(String(64))
+    anwer_tag = Column(String(64))
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+# questions answered by the patient to help the rescuers
 class Question(BaseModel):
     question: str
     answer: str
     time: datetime
+    hints: list[str]
 
 
 class QuestionBulk(BaseModel):

@@ -13,6 +13,7 @@ from jose import JWTError, jwt
 import json
 
 from models.user import User
+from models.security import TokenData
 
 
 def generare_secret_key() -> str:

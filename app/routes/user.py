@@ -35,6 +35,7 @@ class PromoteUser(BaseModel):
     user_id: UUID
     role: Role
 
+
 class RemoveDevice(BaseModel):
     device_id: UUID
 
@@ -118,7 +119,7 @@ async def user_promote(request: UuidRequest, current_user: User = Depends(get_cu
 
 
 @user_router.put("/device", response_model=UuidResponse)
-async def user_device_add(): #TODO: add auth back in
+async def user_device_add():  # TODO: add auth back in
     """
     adds a new device to a user
     """

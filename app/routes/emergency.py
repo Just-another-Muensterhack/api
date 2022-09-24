@@ -6,8 +6,18 @@ from utils.jwt import get_current_user
 
 from database import session
 from models.device import Device
-from models.emergency import Emergency, EmergencyCreate, EmergencyList, Question, QuestionBulk, EmergencyRead, \
-    EmergencyDelete, Status, EmergencyUUID, EmergencyBase
+from models.emergency import (
+    Emergency,
+    EmergencyCreate,
+    EmergencyList,
+    Question,
+    QuestionBulk,
+    EmergencyRead,
+    EmergencyDelete,
+    Status,
+    EmergencyUUID,
+    EmergencyBase,
+)
 from models.emergency_user import EmergencyUser, Type
 from models.helper import SuccessResponse, UuidResponse
 from models.user import User
@@ -179,4 +189,3 @@ async def emergency_log_info(request: EmergencyLog, current_user: User = Depends
         }
         for e in session.query(Question.uuid).filter_by(emergency=request.emergency).all()
     ]
-

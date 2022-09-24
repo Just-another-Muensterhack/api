@@ -4,6 +4,13 @@ This is a first aid app for people in need of help.
 In an emergency, this app makes it possible to inform qualified helpers in the surrounding area and thus arrive at the scene of the emergency even faster than an ambulance.
 
 ## Development
+### python venv setup
+```bash
+git clone https://github.com/Just-another-Muensterhack/helpwave-backend.git
+python -m venv venv
+source venv/bin/activate
+```
+
 ### Database Setup
 
 Change the Directory into the root project folder and start the postgres database with docker-compose.

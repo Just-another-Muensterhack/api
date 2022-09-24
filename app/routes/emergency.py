@@ -21,6 +21,9 @@ async def emergency_create(request: EmergencyCreate, current_user: User = Depend
     """
     creates an emergency and taking the coordinates from specified device
     """
+
+    device: Device = Device.get(request.device)
+
     return {"id": uuid4()}
 
 

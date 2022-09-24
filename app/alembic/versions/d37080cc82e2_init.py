@@ -54,21 +54,15 @@ def downgrade() -> None:
             autoincrement=False,
             nullable=False,
         ),
-        sa.Column(
-            "created_at", postgresql.TIMESTAMP(), autoincrement=False, nullable=True
-        ),
-        sa.Column(
-            "closed_at", postgresql.TIMESTAMP(), autoincrement=False, nullable=True
-        ),
+        sa.Column("created_at", postgresql.TIMESTAMP(), autoincrement=False, nullable=True),
+        sa.Column("closed_at", postgresql.TIMESTAMP(), autoincrement=False, nullable=True),
         sa.PrimaryKeyConstraint("id", name="emergencies_pkey"),
     )
     op.create_index("ix_emergencies_id", "emergencies", ["id"], unique=False)
     op.create_table(
         "users",
         sa.Column("id", postgresql.UUID(), autoincrement=False, nullable=False),
-        sa.Column(
-            "created_at", postgresql.TIMESTAMP(), autoincrement=False, nullable=True
-        ),
+        sa.Column("created_at", postgresql.TIMESTAMP(), autoincrement=False, nullable=True),
         sa.PrimaryKeyConstraint("id", name="users_pkey"),
     )
     op.create_index("ix_users_id", "users", ["id"], unique=False)
@@ -86,9 +80,7 @@ def downgrade() -> None:
         sa.Column("first_name", sa.VARCHAR(), autoincrement=False, nullable=True),
         sa.Column("last_name", sa.VARCHAR(), autoincrement=False, nullable=True),
         sa.Column("hashed_password", sa.VARCHAR(), autoincrement=False, nullable=True),
-        sa.Column(
-            "created_at", postgresql.TIMESTAMP(), autoincrement=False, nullable=True
-        ),
+        sa.Column("created_at", postgresql.TIMESTAMP(), autoincrement=False, nullable=True),
         sa.PrimaryKeyConstraint("id", name="registered_users_pkey"),
     )
     op.create_index(
@@ -97,9 +89,7 @@ def downgrade() -> None:
         ["phone_number"],
         unique=False,
     )
-    op.create_index(
-        "ix_registered_users_last_name", "registered_users", ["last_name"], unique=False
-    )
+    op.create_index("ix_registered_users_last_name", "registered_users", ["last_name"], unique=False)
     op.create_index("ix_registered_users_id", "registered_users", ["id"], unique=False)
     op.create_index(
         "ix_registered_users_first_name",
@@ -107,7 +97,5 @@ def downgrade() -> None:
         ["first_name"],
         unique=False,
     )
-    op.create_index(
-        "ix_registered_users_email", "registered_users", ["email"], unique=False
-    )
+    op.create_index("ix_registered_users_email", "registered_users", ["email"], unique=False)
     # ### end Alembic commands ###

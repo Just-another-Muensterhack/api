@@ -101,9 +101,7 @@ async def user_register(request: OAuth2PasswordRequestForm = Depends()):
 
 
 @user_router.post("/promote", response_model=SuccessResponse)
-async def user_promote(
-    request: PromoteUser, current_user: User = Depends(get_current_user)
-):
+async def user_promote(request: PromoteUser, current_user: User = Depends(get_current_user)):
     """
     changes role of user to specified
     """
@@ -112,9 +110,7 @@ async def user_promote(
 
 
 @user_router.post("/info", response_model=UserInfo)
-async def user_promote(
-    request: UuidRequest, current_user: User = Depends(get_current_user)
-):
+async def user_promote(request: UuidRequest, current_user: User = Depends(get_current_user)):
     """
     changes role of user to specified
     """
@@ -132,9 +128,7 @@ async def user_device_add(current_user: User = Depends(get_current_user)):
 
 
 @user_router.delete("/device", response_model=SuccessResponse)
-async def user_device_remove(
-    request: RemoveDevice, current_user: User = Depends(get_current_user)
-):
+async def user_device_remove(request: RemoveDevice, current_user: User = Depends(get_current_user)):
 
     """
     removes device from user
@@ -144,9 +138,7 @@ async def user_device_remove(
 
 
 @user_router.post("/device/update", response_model=SuccessResponse)
-async def user_device_remove(
-    request: UpdatePosition, current_user: User = Depends(get_current_user)
-):
+async def user_device_remove(request: UpdatePosition, current_user: User = Depends(get_current_user)):
 
     """
     updates the position of specified device
@@ -156,9 +148,7 @@ async def user_device_remove(
 
 
 @user_router.post("/device/list", response_model=DevicesList)
-async def user_promote(
-    request: PromoteUser, current_user: User = Depends(get_current_user)
-):
+async def user_promote(request: PromoteUser, current_user: User = Depends(get_current_user)):
 
     """
     list all devices belonging to this user

@@ -1,7 +1,9 @@
-from .jwt import Token, get_current_user
-from .structs import SuccessResponse, UuidResponse, UuidRequest
+from utils.jwt import get_current_user, create_access_token
 
-from schema.user import User, Role
+from models.user import session, User, UserDelete, UserRegister, UserLogin, UserRead
+from models.device import DeviceCreate, DeviceDelete, DeviceUpdatePosition, DevicesList
+from models.security import Token
+from models.helper import SuccessResponse, UuidResponse, UuidRequest
 
 from typing import Optional
 from uuid import UUID, uuid4
@@ -13,66 +15,22 @@ from pydantic import BaseModel
 
 user_router = APIRouter(prefix="/user")
 
-# Request Types
-class UserDelete(BaseModel):
-    user_id: UUID
-
-
-class UserRegister(BaseModel):
-    user_id: UUID
-    phone: str
-    password: str
-    first_name: str
-    second_name: str
-
-
-class UserLogin(BaseModel):
-    email: str
-    password_hash: str
-
-
-class PromoteUser(BaseModel):
-    user_id: UUID
-    role: Role
-
-
-class RemoveDevice(BaseModel):
-    device_id: UUID
-
-
-class UpdatePosition(BaseModel):
-    device_id: UUID
-    lat: float
-    lon: float
-
-
-# Response Types
-
-
-class SessionResponse(BaseModel):
-    success: bool
-    jwt: str
-
-
-class DevicesList(BaseModel):
-    devices: list[UUID]
-
-
-class UserInfo(BaseModel):
-    id: UUID
-    email: Optional[str]
-    first_name: Optional[str]
-    second_name: Optional[str]
-    role: Optional[int]
-
-
 # does not require auth
-@user_router.post("/create", response_model=UuidResponse)
+@user_router.post("/create", response_model=Token)
 async def user_create():
     """
     creates basic user and returnes basic id from the user
     """
-    return {"id": "random uuid"}
+
+    user: User = User()
+
+    session.add(user)
+    session.commit()
+    session.refresh(user)
+
+    access_token = create_access_token(user.uuid)
+
+    return {"access_token": str(access_token), "token_type": "bearer"}
 
 
 @user_router.delete("/delete", response_model=SuccessResponse)
@@ -80,78 +38,82 @@ async def user_delete(request: UserDelete):
     """
     deletes requested user
     """
-    return {"id": "random uuid"}
 
+    user = User.query.get(uuid=request.user_uuid)
 
-# does not require auth
-@user_router.post("/register", response_model=SuccessResponse)
-async def user_register(request: UserRegister):
-    """
-    registeres user
-    """
-    return {"sucess": True}
+    if not user:
+        return {"success": False}
 
-
-@user_router.post("/login", response_model=Token)
-async def user_register(request: OAuth2PasswordRequestForm = Depends()):
-    """
-    login user
-    """
-    return {"sucess": True, "jwt": "example"}
-
-
-@user_router.post("/promote", response_model=SuccessResponse)
-async def user_promote(request: PromoteUser, current_user: User = Depends(get_current_user)):
-    """
-    changes role of user to specified
-    """
+    session.delete(user)
+    session.commit()
 
     return {"success": True}
 
 
-@user_router.post("/info", response_model=UserInfo)
-async def user_promote(request: UuidRequest, current_user: User = Depends(get_current_user)):
+@user_router.post("/info", response_model=UserRead)
+async def user_read(current_user: User = Depends(get_current_user)):
     """
     changes role of user to specified
     """
 
-    return {"id": request["id"]}
+    return current_user
 
 
 @user_router.put("/device", response_model=UuidResponse)
-async def user_device_add():  # TODO: add auth back in
+async def user_device_create(request: DeviceCreate, current_user: User = Depends(get_current_user)):
     """
     adds a new device to a user
     """
 
-    return {"id": uuid4()}
+    device = Device(user_uuid=current_user.uuid)
+
+    session.add(device)
+    session.commit()
+    session.refresh(device)
+
+    return {"uuid": device.uuid}
 
 
 @user_router.delete("/device", response_model=SuccessResponse)
-async def user_device_remove(request: RemoveDevice, current_user: User = Depends(get_current_user)):
-
+async def user_device_delete(request: DeviceDelete, current_user: User = Depends(get_current_user)):
     """
     removes device from user
     """
+
+    device = Device.query.get(uuid=request.uuid)
+
+    if not device:
+        return {"success": False}
+
+    session.delete(device)
+    session.commit()
 
     return {"success": True}
 
 
 @user_router.post("/device/update", response_model=SuccessResponse)
-async def user_device_remove(request: UpdatePosition, current_user: User = Depends(get_current_user)):
-
+async def user_device_update_position(request: DeviceUpdatePosition, current_user: User = Depends(get_current_user)):
     """
     updates the position of specified device
     """
+
+    device = Device.query.get(uuid=request.uuid)
+
+    if not device:
+        return {"success": False}
+
+    device.latitude = request.lat
+    device.longitude = request.lon
+
+    session.commit()
 
     return {"success": True}
 
 
 @user_router.post("/device/list", response_model=DevicesList)
-async def user_promote(request: PromoteUser, current_user: User = Depends(get_current_user)):
-
+async def user_device_read(current_user: User = Depends(get_current_user)):
     """
     list all devices belonging to this user
     """
 
-    return {"devices": []}
+    return {"devices": session.query(Device.uuid).filter_by(user_uuid=current_user.uuid).all()}

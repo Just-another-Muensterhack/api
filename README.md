@@ -22,7 +22,7 @@ set -a
 . .postgres.env
 set +a
 ```
-if you are in dev mode
+Additionally, run the following commands if you are in dev mode.
 ```bash
 export POSTGRES_HOST=localhost
 unset SECRET_KEY_FILE

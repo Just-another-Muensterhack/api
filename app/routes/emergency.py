@@ -34,7 +34,7 @@ from models.emergency import (
     QuestionBulk,
     EmergencyLog,
 )
-from models.helper import SuccessResponse, UuidResponse, UuidRequest, DeviceUpdateCoordinates
+from models.helper import SuccessResponse, UuidResponse, UuidRequest
 from models.security import Token
 
 from uuid import UUID, uuid4

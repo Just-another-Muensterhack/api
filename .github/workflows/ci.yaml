@@ -87,6 +87,7 @@ jobs:
         id: extract_branch
 
       - name: Trigger CD
+        if: ${{ github.event_name != 'pull_request' }}
         run: |
           curl https://hook.helpwave.de/cgi-bin/deploy.cgi?${{ steps.extract_branch.outputs.branch }}
 

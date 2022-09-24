@@ -1,7 +1,7 @@
 from utils.jwt import get_current_user, create_access_token
 
 from models.user import session, User, UserDelete, UserRegister, UserLogin, UserRead
-from models.device import DeviceCreate, DeviceDelete, DeviceUpdatePosition, DevicesList
+from models.device import DeviceDelete, DeviceUpdatePosition, DevicesList
 from models.security import Token
 from models.helper import SuccessResponse, UuidResponse, UuidRequest
 
@@ -60,7 +60,7 @@ async def user_read(current_user: User = Depends(get_current_user)):
 
 
 @user_router.put("/device", response_model=UuidResponse)
-async def user_device_create(request: DeviceCreate, current_user: User = Depends(get_current_user)):
+async def user_device_create(current_user: User = Depends(get_current_user)):
     """
     adds a new device to a user
     """

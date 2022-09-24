@@ -22,10 +22,6 @@ class Device(Base):
     user = relationship("User", back_populates="devices", passive_deletes=True)
 
 
-class DeviceCreate(BaseModel):
-    user_uuid: UUID
-
-
 class DeviceDelete(BaseModel):
     device_uuid: UUID
 

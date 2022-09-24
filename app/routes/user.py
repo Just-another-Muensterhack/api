@@ -79,7 +79,6 @@ async def user_create():
     user: User = User.create()
 
     access_token = create_access_token(user_id = user.id)
-    print(access_token)
     return {"access_token": str(access_token), "token_type": "bearer"}
 
 @user_router.delete("/delete", response_model=SuccessResponse)
@@ -119,12 +118,11 @@ async def user_promote(request: PromoteUser, current_user: User = Depends(get_cu
 
 
 @user_router.post("/info", response_model=UserInfo)
-async def user_promote(request: UuidRequest, current_user: User = Depends(get_current_user)):
+async def user_promote(current_user: User = Depends(get_current_user)):
     """
     changes role of user to specified
     """
-    user: User = User.get(request.id)
-    return user
+    return current_user
 
 
 @user_router.put("/device", response_model=UuidResponse)

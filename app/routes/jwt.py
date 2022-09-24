@@ -42,7 +42,7 @@ oauth2_scheme: OAuth2PasswordBearer = OAuth2PasswordBearer(tokenUrl="token")
 class TokenData(BaseModel):
     user_id: Optional[UUID]
 
-
+jw
 class Token(BaseModel):
     access_token: str
     token_type: str
@@ -59,12 +59,13 @@ def get_password_hash(password):
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
+        detail="Could not validate credentials",jw
         headers={"WWW-Authenticate": "Bearer"},
     )
 
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        print(payload)
         user_id: str = payload.get("sub")
         if user_id is None:
             raise credentials_exception

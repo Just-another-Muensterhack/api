@@ -1,8 +1,6 @@
 from starlette.middleware.cors import CORSMiddleware
 
 import routes
-import uuid
-from datetime import datetime
 
 from fastapi import FastAPI
 

@@ -11,10 +11,9 @@ database = os.getenv("POSTGRES_DB", "api")
 host = os.getenv("POSTGRES_HOST", "postgres")
 port = os.getenv("POSTGRES_PORT", "5432")
 
-engine = create_engine(
-    f"postgresql://" f"{user}:{password}@{host}:{port}/{database}",
-    echo=True,
-)
+conn_string: str = f"postgresql://" f"{user}:{password}@{host}:{port}/{database}"
+
+engine = create_engine(conn_string, echo=True)
 
 Model = declarative_base()
 

@@ -1,5 +1,6 @@
-from pydantic import BaseModel
 from uuid import UUID
+
+from pydantic import BaseModel
 
 
 class UuidRequest(BaseModel):
@@ -12,9 +13,3 @@ class UuidResponse(BaseModel):
 
 class SuccessResponse(BaseModel):
     success: bool
-
-
-class DeviceUpdateCoordinates(BaseModel):
-    device: UUID
-    latitude: float
-    longitude: float

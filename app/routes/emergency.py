@@ -1,8 +1,29 @@
+from fastapi import Depends, APIRouter, HTTPException, status
+
 import requests
 
 from utils.jwt import get_current_user
 
+from database import session
+from models.device import Device
+from models.emergency import (
+    Emergency,
+    EmergencyCreate,
+    EmergencyList,
+    Question,
+    QuestionBulk,
+    EmergencyRead,
+    EmergencyDelete,
+    Status,
+    EmergencyUUID,
+    EmergencyBase,
+)
+from models.emergency_user import EmergencyUser, Type
+from models.helper import SuccessResponse, UuidResponse
 from models.user import User
+
+emergency_router = APIRouter(prefix="/emergency")
+
 from models.emergency import (
     Status,
     Emergency,
@@ -28,57 +49,87 @@ emergency_router = APIRouter(prefix="/emergency")
 
 graph_data = requests.get("https://cdn.helpwave.de/graph.json").json()
 
-
 # does not require auth
 @emergency_router.post("/create", response_model=UuidResponse)
-async def emergency_create(request: EmergencyCreate, current_user: User = Depends(get_current_user)):
+async def emergency_create(request: EmergencyCreate, _: User = Depends(get_current_user)):
     """
     creates an emergency and taking the coordinates from specified device
     """
 
-    device: Device = Device.query.get(request.device)
-    emergency: Emergency = Emergency(device=device.uuid)
+    device: Device = session.query(Device.uuid).filter_by(uuid=request.device).first()
 
-    return {"id": uuid4()}
+    if not device:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
+    emergency: Emergency = Emergency(longitude=request.longitude, latitude=request.latitude)
+
+    session.add(emergency)
+    session.commit()
+    session.refresh(emergency)
+
+    return {"uuid": emergency.uuid}
 
 
 @emergency_router.delete("/terminate", response_model=SuccessResponse)
-async def emergency_terminate(current_user: User = Depends(get_current_user)):
+async def emergency_terminate(request: EmergencyDelete, _: User = Depends(get_current_user)):
     """
     termiantes the emergency
     """
+
+    emergency = Emergency.query.get(uuid=request.emergency)
+
+    if not emergency:
+        return {"success": False}
+
+    emergency.status = Status.COMPLETED
+    session.commit()
+
     return {"success": True}
 
 
 @emergency_router.put("/info", response_model=EmergencyList)
-async def emergency_update(current_user: User = Depends(get_current_user)):
+async def emergency_read(request: EmergencyRead, _: User = Depends(get_current_user)):
     """
-    setting severity
+    getting information about emergency
     """
-    return {"uuid": "uuid", "latitude": 0, "longitude": 0, "severity": 5, "status": 1}
 
+    emergency = Emergency.query.get(uuid=request.emergency)
 
-@emergency_router.put("/coordinates", response_model=SuccessResponse)
-async def emergency_coordinates(coordinates: DeviceUpdateCoordinates, current_user: User = Depends(get_current_user)):
-    """
-    receiving coordinates of the accident
-    """
-    return {"success": True}
+    if not emergency:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
+    return emergency
 
 
 @emergency_router.post("/accept", response_model=SuccessResponse)
-async def emergency_accept(current_user: User = Depends(get_current_user)):
+async def emergency_accept(request: EmergencyUUID, current_user: User = Depends(get_current_user)):
     """
     accept helping
     """
+    if not session.query(Emergency).get(uuid=request.uuid):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
+    emergency_user = EmergencyUser(user_uuid=current_user.uuid, emergency_uuid=request.uuid)
+
+    session.add(emergency_user)
+    session.commit()
+
     return {"success": True}
 
 
 @emergency_router.post("/deny", response_model=SuccessResponse)
-async def emergency_deny(current_user: User = Depends(get_current_user)):
+async def emergency_deny(request: EmergencyUUID, current_user: User = Depends(get_current_user)):
     """
     deny helping
     """
+    if not session.query(Emergency).get(uuid=request.uuid):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
+    emergency_user = EmergencyUser(user_uuid=current_user.uuid, emergency_uuid=request.uuid, type=Type.NONE)
+
+    session.add(emergency_user)
+    session.commit()
+
     return {"success": True}
 
 
@@ -87,6 +138,8 @@ async def emergency_log_single(log: Question, current_user: User = Depends(get_c
     """
     setting one question
     """
+
+    print(log.answer)
     return {"success": True}
 
 
@@ -95,10 +148,20 @@ async def emersgency_log_bulk(log: QuestionBulk, current_user: User = Depends(ge
     """
     setting multiple questions
     """
+    print(log.questions)
     return {"success": True}
 
 
-@emergency_router.get("/log", response_model=QuestionBulk)
+@emergency_router.get("/poll", response_model=EmergencyBase)
+async def emergency_poll(_: User = Depends(get_current_user)):
+    emergency = session.query(Emergency).first()
+
+    if not emergency:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
+    return emergency
+
+
 async def emergency_log_info(request: EmergencyLog, current_user: User = Depends(get_current_user)):
     """
     returns a list of all questions the patient answered before the first responder arrived

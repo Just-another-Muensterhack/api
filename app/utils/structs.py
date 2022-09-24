@@ -5,14 +5,14 @@ from uuid import UUID
 
 
 class UuidRequest(BaseModel):
-    id: UUID
+    uuid: UUID
 
 
 # responses
 
 
 class UuidResponse(BaseModel):
-    id: UUID
+    uuid: UUID
 
 
 class SuccessResponse(BaseModel):

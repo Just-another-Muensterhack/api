@@ -21,6 +21,7 @@ def generare_secret_key() -> str:
 def get_secret_key() -> str:
     # this sets a default value for the SECRET_KEY_FILE
     env_file_path: Optional[str] = os.getenv("SECRET_KEY_FILE")
+
     if not env_file_path:
         logging.warn("generating temporary secret key")
         return generare_secret_key()
@@ -42,7 +43,7 @@ oauth2_scheme: OAuth2PasswordBearer = OAuth2PasswordBearer(tokenUrl="token")
 class TokenData(BaseModel):
     user_id: Optional[UUID]
 
-jw
+
 class Token(BaseModel):
     access_token: str
     token_type: str
@@ -59,16 +60,19 @@ def get_password_hash(password):
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",jw
+        detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
 
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        print(payload)
-        user_id: str = payload.get("sub")
-        if user_id is None:
+
+        user_id: str = payload.get("user")
+        created_at: str = payload.get("created_at")
+
+        if not user_id:
             raise credentials_exception
+
         token_data = TokenData(user_id=user_id)
     except JWTError:
         raise credentials_exception
@@ -78,17 +82,20 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 
     if not user:
         raise credentials_exception
+
     return user
 
-def create_access_token(user_id: UUID):
+
+def create_access_token(uuid: UUID):
     expire = datetime.utcnow() + timedelta(days=TOKEN_EXPIRATION_DAYS)
 
     to_encode = {
-        "key": str(user_id),
-        "creation": datetime.utcnow().isoformat()
+        "user": str(uuid),
+        "created_at": datetime.utcnow().isoformat(),
     }
 
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
     return encoded_jwt
 
 

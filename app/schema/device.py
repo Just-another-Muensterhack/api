@@ -1,7 +1,7 @@
-import uuid
+from uuid import uuid4, UUID
 from datetime import datetime
 from sqlalchemy import Column, Float, DateTime
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID as UUIDColumn
 from sqlalchemy.orm import relationship
 
 from user import User
@@ -12,37 +12,11 @@ from database import session
 class Device(Model):
     __tablename__ = "devices"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
-    user_id = relationship(User.id)
-    latitude = Column(Float, nullable=False)
-    longitude = Column(Float, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    uuid = Column(UUIDColumn(as_uuid=True), primary_key=True, index=True, default=uuid4)
+    latitude = Column(Float, nullable=False, default=0)
+    longitude = Column(Float, nullable=False, default=0)
 
-    @staticmethod
-    def get(device_id: uuid.UUID):
-        return session.query(Device).get(device_id)
+    user_uuid = Column(UUIDColumn(as_uuid=True), Foreignkey("user.uuid", ondelete="CASCADE"))
 
-    @staticmethod
-    def create(device):
-        session.add(
-            Device(
-                id=uuid.uuid4(),
-                user_id=device.user_id,
-                latitude=device.latitude,
-                longitude=device.longitude,
-                created_at=datetime.utcnow(),
-            )
-        )
-        session.commit()
+    user = relationship("User", back_populates="devices", passive_deletes=True)
 
-    @staticmethod
-    def update(device):
-        session.query(Device).filter(Device.id == device.id).update(
-            Device(latitude=device.latitude, longitude=device.longitude)
-        )
-        session.commit()
-
-    @staticmethod
-    def delete(device_id: uuid.UUID):
-        session.query(Device).filter(Device.id == device_id).delete()
-        session.commit()

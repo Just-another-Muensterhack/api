@@ -1,7 +1,7 @@
-import enum
+from enum import Enum
 import uuid
 
-from sqlalchemy import Column, Enum, DateTime
+from sqlalchemy import Column, Enum as EnumColumn, DateTime 
 from sqlalchemy.orm import relationship
 
 from emergency import Emergency
@@ -11,45 +11,19 @@ import datetime
 from database import session
 
 
-class Type(enum.Enum):
-    patient = 0
-    aide = 1
+class Type(Enum):
+    PATIENT = 0
+    AIDE = 1
 
 
 class EmergencyUser(Model):
-    __tablename__ = "emergency_users"
+    __tablename__ = "emergency_user"
 
-    user_id = relationship(User.id)
-    emergency_id = relationship(Emergency.id)
-    type = Column(Enum(Type), nullable=False)
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    user_uuid = Column(UUIDColumn(as_uuid=True), ForeignKey("user.uuid", ondelete="CASCADE"))
+    emergency_uuid = Column(UUIDColumn(as_uuid=True), ForeignKey("emergency.uuid", ondelete="CASCADE"))
 
-    @staticmethod
-    def get(emergency_user_id: uuid.UUID):
-        return session.query(EmergencyUser).get(emergency_user_id)
+    user_type = Column(EnumColumn(Type), nullable=False, default=Type.PATIENT)
 
-    @staticmethod
-    def create(emergency_user):
-        session.add(
-            EmergencyUser(
-                id=uuid.uuid4(),
-                emergency_id=emergency_user.emergency_id,
-                type=emergency_user.type,
-                created_at=datetime.datetime.utcnow(),
-            )
-        )
-        session.commit()
+    user = relationship("User", foreign_keys=[user_uuid], passive_deletes=True)
+    emergency = relationship("Emergency", foreign_keys=[emergency_uuid], passive_deletes=True)
 
-    @staticmethod
-    def update(emergency_user):
-        session.query(EmergencyUser).filter(Emergency.id == emergency_user.id).update(
-            EmergencyUser(
-                emergency_id=emergency_user.emergency_id,
-            )
-        )
-        session.commit()
-
-    @staticmethod
-    def delete(emergency_user_id: uuid.UUID):
-        session.query(EmergencyUser).filter(EmergencyUser.id == emergency_user_id).delete()
-        session.commit()

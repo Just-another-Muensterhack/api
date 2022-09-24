@@ -34,3 +34,9 @@ class DeviceUpdatePosition(BaseModel):
 
 class DevicesList(BaseModel):
     devices: list[UUID]
+
+
+class DeviceUpdateCoordinates(BaseModel):
+    device: UUID
+    latitude: float
+    longitude: float

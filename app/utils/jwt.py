@@ -1,9 +1,5 @@
-import logging
 import os
 from datetime import datetime, timedelta
-from random import choices
-from string import ascii_letters
-from typing import Optional
 from uuid import UUID
 
 from fastapi import Depends, HTTPException, status
@@ -15,20 +11,8 @@ from database import session
 from models.user import User
 
 
-def generate_secret_key() -> str:
-    return "".join(choices(ascii_letters, k=32))
-
-
 def get_secret_key() -> str:
-    # this sets a default value for the SECRET_KEY_FILE
-    env_file_path: Optional[str] = os.getenv("SECRET_KEY_FILE")
-
-    if not env_file_path:
-        logging.warn("generating temporary secret key")
-        return generate_secret_key()
-
-    with open(env_file_path) as f:
-        return f.read()
+    return os.getenv("JWT_SECRET", default="A" * 32)
 
 
 SECRET_KEY: str = get_secret_key()

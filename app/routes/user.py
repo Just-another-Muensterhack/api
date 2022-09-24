@@ -1,7 +1,7 @@
 from utils.jwt import get_current_user, create_access_token
 
 from models.user import session, User, UserDelete, UserRegister, UserLogin, UserRead
-from models.device import DeviceDelete, DeviceUpdatePosition, DevicesList
+from models.device import DeviceDelete, DeviceUpdatePosition, DevicesList, Device
 from models.security import Token
 from models.helper import SuccessResponse, UuidResponse, UuidRequest
 
@@ -23,7 +23,6 @@ async def user_create():
     """
 
     user: User = User()
-
     session.add(user)
     session.commit()
     session.refresh(user)

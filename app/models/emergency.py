@@ -42,13 +42,17 @@ class EmergencyBase(BaseModel):
 
 class EmergencyCreate(BaseModel):
     device: UUID
+    latitude: float
+    longitude: float
 
 class EmergencyRead(BaseModel):
     device: UUID
 
+class EmergencyDelete(BaseModel):
+    device: UUID
+
 class EmergencyUpdate(BaseModel):
     status: Status
-
 
 class EmergencyList(BaseModel):
     emergencies: list[EmergencyBase]
@@ -65,7 +69,7 @@ class QuestionBulk(BaseModel):
     questions: list[Question]
 
 class EmergencyUpdateCoordinates(BaseModel):
-    device: UUID
+    emergency: UUID
     latitude: float
     longitude: float
 

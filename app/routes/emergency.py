@@ -1,9 +1,11 @@
 from utils.jwt import get_current_user
 
 from models.user import User
-from models.emergency import Status, Emergency, EmergencyCreate, EmergencyBase, EmergencyList, Question, QuestionBulk, EmergencyRead, EmergencyUpdateCoordinates
+from models.emergency import Status, Emergency, EmergencyCreate, EmergencyBase, EmergencyList, Question, QuestionBulk, EmergencyRead, EmergencyUpdateCoordinates, EmergencyDelete
 from models.helper import SuccessResponse, UuidResponse, UuidRequest
 from models.security import Token
+from models.device import Device
+from database import session
 
 from uuid import UUID, uuid4
 from datetime import datetime
@@ -22,9 +24,12 @@ async def emergency_create(request: EmergencyCreate, current_user: User = Depend
     creates an emergency and taking the coordinates from specified device
     """
 
-    device: Device = Device.query.get(request.device)
-    emergency: Emergency = Emergency(device = device.uuid)
+    device: Device = session.query(Device.uuid).filter_by(uuid=request.device).first()
 
+    if not device:
+        return { "success": False }
+
+    emergency: Emergency = Emergency(uuid = device.uuid, longitude = request.longitude, latitude = request.latitude)
     session.add(emergency)
     session.commt()
     session.refresh()
@@ -33,7 +38,7 @@ async def emergency_create(request: EmergencyCreate, current_user: User = Depend
 
 
 @emergency_router.delete("/terminate", response_model=SuccessResponse)
-async def emergency_terminate(request: , current_user: User = Depends(get_current_user)):
+async def emergency_terminate(request: EmergencyDelete, current_user: User = Depends(get_current_user)):
     """
     termiantes the emergency
     """
@@ -69,16 +74,15 @@ async def emergency_coordinates(coordinates: EmergencyUpdateCoordinates, current
     receiving coordinates of the accident
     """
 
-    emergency = Emergency.query.get(uuid=request.;)
+    emergency = Emergency.query.get(uuid=request.emergency)
 
     if not device:
         return {"success": False}
 
-    device.latitude = request.lat
-    device.longitude = request.lon
+    device.latitude = request.latitude
+    device.longitude = request.longitude
 
     session.commit()
-
 
     return {"success": True}
 
@@ -88,6 +92,8 @@ async def emergency_accept(current_user: User = Depends(get_current_user)):
     """
     accept helping
     """
+    # TODO: implement accept
+
     return {"success": True}
 
 
@@ -96,6 +102,8 @@ async def emergency_deny(current_user: User = Depends(get_current_user)):
     """
     deny helping
     """
+
+    # TODO: implement deny
     return {"success": True}
 
 

@@ -7,10 +7,10 @@ from sqlalchemy.orm import relationship
 from pydantic import BaseModel
 
 from models.user import User
-from database import base, session
+from database import Base, session
 
 
-class Device(base):
+class Device(Base):
     __tablename__ = "devices"
 
     uuid = Column(UUIDColumn(as_uuid=True), primary_key=True, index=True, default=uuid4)

@@ -4,7 +4,7 @@ import routes
 
 from fastapi import FastAPI
 
-from database import base, engine
+from database import Base, engine
 
 app = FastAPI(
     title="helpwave-backend",
@@ -40,7 +40,7 @@ app.include_router(routes.emergency.emergency_router)
 
 @app.on_event("startup")
 async def startup_event():
-    base.metadata.create_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
 
 
 if __name__ == "__main__":

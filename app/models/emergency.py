@@ -2,13 +2,13 @@ from uuid import uuid4, UUID
 from enum import Enum
 from datetime import datetime
 
-from database import session
+from database import session, Base
 
 from sqlalchemy import Column, Enum as EnumColumn, DateTime, Float
 from sqlalchemy.dialects.postgresql import UUID as UUIDColumn
 from pydantic import BaseModel, ValidationError, validator
 
-from database import base, session
+from database import Base, session
 
 
 class Status(Enum):
@@ -17,7 +17,7 @@ class Status(Enum):
     COMPLETED = 2
 
 
-class Emergency(base):
+class Emergency(Base):
     __tablename__ = "emergency"
 
     uuid = Column(UUIDColumn(as_uuid=True), primary_key=True, index=True, default=uuid4)

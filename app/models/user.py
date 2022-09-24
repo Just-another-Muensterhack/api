@@ -7,10 +7,10 @@ from sqlalchemy.dialects.postgresql import UUID as UUIDColumn
 from sqlalchemy.orm import relationship
 from pydantic import BaseModel
 
-from database import base, session
+from database import Base, session
 
 
-class User(base):
+class User(Base):
     __tablename__ = "user"
 
     uuid = Column(UUIDColumn(as_uuid=True), primary_key=True, index=True, default=uuid4)

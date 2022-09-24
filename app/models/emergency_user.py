@@ -8,7 +8,7 @@ from emergency import Emergency
 from user import User
 import datetime
 
-from database import session, base
+from database import session, Base
 
 
 class Type(Enum):
@@ -16,7 +16,7 @@ class Type(Enum):
     AIDE = 1
 
 
-class EmergencyUser(base):
+class EmergencyUser(Base):
     __tablename__ = "emergency_user"
 
     user_uuid = Column(UUIDColumn(as_uuid=True), ForeignKey("user.uuid", ondelete="CASCADE"))

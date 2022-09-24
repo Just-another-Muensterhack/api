@@ -15,7 +15,7 @@ conn_string: str = f"postgresql://" f"{user}:{password}@{host}:{port}/{database}
 
 engine = create_engine(conn_string, echo=True)
 
-base = declarative_base()
+Base = declarative_base()
 
 session_maker = sessionmaker(bind=engine)
 session = session_maker()

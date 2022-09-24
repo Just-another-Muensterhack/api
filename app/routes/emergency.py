@@ -31,7 +31,7 @@ async def emergency_create(request: EmergencyCreate, current_user: User = Depend
 
     emergency: Emergency = Emergency(uuid = device.uuid, longitude = request.longitude, latitude = request.latitude)
     session.add(emergency)
-    session.commt()
+    session.commit()
     session.refresh()
 
     return {"id": emergency.uuid }

@@ -5,6 +5,8 @@ services:
     image: postgres
     restart: always
     env_file: .postgres.env
+    container_name: postgres
+    hostname: postgres
     ports:
       - "5432:5432"
     volumes:
@@ -13,9 +15,14 @@ services:
   api:
     build: ./app
     image: ghcr.io/just-another-muensterhack/api:main
+    container_name: helpwave-backend
+    hostname: helpwave-backend
     restart: always
     env_file: .api.env
     depends_on:
       - postgres
     ports:
       - "8080:8000"
+    networks:
+      helpwave:
+        ipv4_address: 172.0.0.3

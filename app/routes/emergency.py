@@ -1,7 +1,16 @@
 from utils.jwt import get_current_user
 
 from models.user import User
-from models.emergency import Status, Emergency, EmergencyCreate, EmergencyBase, EmergencyList, Question, QuestionBulk, EmergencyLog
+from models.emergency import (
+    Status,
+    Emergency,
+    EmergencyCreate,
+    EmergencyBase,
+    EmergencyList,
+    Question,
+    QuestionBulk,
+    EmergencyLog,
+)
 from models.helper import SuccessResponse, UuidResponse, UuidRequest, DeviceUpdateCoordinates
 from models.security import Token
 
@@ -15,9 +24,7 @@ from pydantic import BaseModel
 
 emergency_router = APIRouter(prefix="/emergency")
 
-graph_data = requests.get(
-    "https://cdn.helpwave.de/graph.json"
-).json()
+graph_data = requests.get("https://cdn.helpwave.de/graph.json").json()
 
 
 # does not require auth
@@ -90,9 +97,7 @@ async def emersgency_log_bulk(log: QuestionBulk, current_user: User = Depends(ge
 
 
 @emergency_router.get("/log", response_model=QuestionBulk)
-async def emergency_log_info(
-    request: EmergencyLog, current_user: User = Depends(get_current_user)
-):
+async def emergency_log_info(request: EmergencyLog, current_user: User = Depends(get_current_user)):
     """
     returns a list of all questions the patient answered before the first responder arrived
     """
@@ -121,7 +126,5 @@ async def emergency_log_info(
             "time": e.created_at,
             "hints": _get_hints(e.question_tag),
         }
-        for e in session.query(Question.uuid)
-        .filter_by(emergency=request.emergency)
-        .all()
+        for e in session.query(Question.uuid).filter_by(emergency=request.emergency).all()
     ]

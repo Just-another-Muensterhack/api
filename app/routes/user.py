@@ -1,4 +1,4 @@
-from .jwt import Token, get_current_user
+from .jwt import Token, get_current_user, create_access_token
 from .structs import SuccessResponse, UuidResponse, UuidRequest
 
 from schema.user import User, Role
@@ -78,11 +78,9 @@ async def user_create():
     """
     user: User = User.create()
 
-    access_token = create_access_token(
-        data={"sub": user.username}, expires_delta=access_token_expires
-    )
-
-    return {"access_token": access_token, "token_type": "bearer"}
+    access_token = create_access_token(user_id = user.id)
+    print(access_token)
+    return {"access_token": str(access_token), "token_type": "bearer"}
 
 @user_router.delete("/delete", response_model=SuccessResponse)
 async def user_delete(request: UserDelete):

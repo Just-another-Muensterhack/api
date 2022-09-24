@@ -1,4 +1,5 @@
 from typing import Optional
+from datetime import datetime, timedelta
 from uuid import UUID
 import os
 import binascii
@@ -8,11 +9,13 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from passlib.context import CryptContext
 from pydantic import BaseModel
+from jose import JWTError, jwt
+import json
 
 from schema.user import User
 
 def generare_secret_key() -> str:
-    binascii.b2a_hex(os.urandom(32))
+    return binascii.b2a_hex(os.urandom(32))
 
 
 def get_secret_key() -> str:
@@ -79,9 +82,9 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 def create_access_token(user_id: UUID):
     expire = datetime.utcnow() + timedelta(days=TOKEN_EXPIRATION_DAYS)
 
-    to_encode: dict = {
-        "id": user_id,
-        "exp": expire
+    to_encode = {
+        "key": str(user_id),
+        "creation": datetime.utcnow().isoformat()
     }
 
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)

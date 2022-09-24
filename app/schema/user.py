@@ -28,8 +28,10 @@ class User(Model):
 
     @staticmethod
     def create() -> 'User':
-        session.add(User(id=uuid.uuid4(), created_at=datetime.utcnow()))
+        user: User = User(id=uuid.uuid4(), created_at=datetime.utcnow())
+        session.add(user)
         session.commit()
+        return user
 
     @staticmethod
     def delete(user_id: uuid.UUID) -> bool:
